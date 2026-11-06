@@ -1,0 +1,14 @@
+{
+  "name": "Chat Export Viewer",
+  "short_name": "Chat Viewer",
+  "description": "Read WhatsApp chat exports offline. Nothing is uploaded.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#00a884",
+  "icons": [
+    {"src": "icon-180.png", "sizes": "180x180", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

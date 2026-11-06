@@ -1,0 +1,1624 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f0f2f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#202c33" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Chat Viewer">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
+<title>Chat Export Viewer</title>
+<style>
+:root{
+  --bg:#eae6df; --panel:#fff; --head:#f0f2f5; --border:#e9edef; --text:#111b21; --muted:#667781; --icon:#54656f;
+  --accent:#00a884; --accent-strong:#008069; --hover:#f5f6f6; --active:#f0f2f5; --input:#f0f2f5;
+  --chat-bg:#efeae2; --in:#fff; --out:#d9fdd3; --shadow:0 1px .5px rgba(11,20,26,.13);
+  --chip:#fff; --chip-text:#54656f; --enc:#ffeecd; --enc-text:#54656f; --link:#027eb5; --mark:#ffd279;
+  --avatar-bg:#dfe5e7; --avatar-fg:#fff; --doc:rgba(11,20,26,.05); --overlay:rgba(255,255,255,.95);
+  --wall:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23000' stroke-opacity='.06' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 30h22a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6H30l-8 6v-6h-2a6 6 0 0 1-6-6V36a6 6 0 0 1 6-6z'/%3E%3Ccircle cx='110' cy='34' r='10'/%3E%3Cpath d='M106 34l3 3 6-6'/%3E%3Cpath d='M70 92l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z'/%3E%3Cpath d='M128 100c0-5 6-7 9-3 3-4 9-2 9 3 0 6-9 11-9 11s-9-5-9-11z'/%3E%3Cpath d='M24 118a14 14 0 0 1 28 0M30 118v8m16-8v8'/%3E%3Ccircle cx='100' cy='140' r='4'/%3E%3Cpath d='M60 20l6 6m0-6l-6 6M140 60h8m-4-4v8'/%3E%3C/g%3E%3C/svg%3E");
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1317; --panel:#111b21; --head:#202c33; --border:#222d34; --text:#e9edef; --muted:#8696a0; --icon:#aebac1;
+    --hover:#202c33; --active:#2a3942; --input:#202c33; --chat-bg:#0b141a; --in:#202c33; --out:#005c4b; --shadow:0 1px .5px rgba(11,20,26,.4);
+    --chip:#182229; --chip-text:#8696a0; --enc:#182229; --enc-text:#ffd279; --link:#53bdeb; --mark:#b38a2e;
+    --avatar-bg:#6a7175; --avatar-fg:#cfd4d6; --doc:rgba(0,0,0,.18); --overlay:rgba(11,20,26,.95);
+    --wall:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23fff' stroke-opacity='.045' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 30h22a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6H30l-8 6v-6h-2a6 6 0 0 1-6-6V36a6 6 0 0 1 6-6z'/%3E%3Ccircle cx='110' cy='34' r='10'/%3E%3Cpath d='M106 34l3 3 6-6'/%3E%3Cpath d='M70 92l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z'/%3E%3Cpath d='M128 100c0-5 6-7 9-3 3-4 9-2 9 3 0 6-9 11-9 11s-9-5-9-11z'/%3E%3Cpath d='M24 118a14 14 0 0 1 28 0M30 118v8m16-8v8'/%3E%3Ccircle cx='100' cy='140' r='4'/%3E%3Cpath d='M60 20l6 6m0-6l-6 6M140 60h8m-4-4v8'/%3E%3C/g%3E%3C/svg%3E");
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1317; --panel:#111b21; --head:#202c33; --border:#222d34; --text:#e9edef; --muted:#8696a0; --icon:#aebac1;
+  --hover:#202c33; --active:#2a3942; --input:#202c33; --chat-bg:#0b141a; --in:#202c33; --out:#005c4b; --shadow:0 1px .5px rgba(11,20,26,.4);
+  --chip:#182229; --chip-text:#8696a0; --enc:#182229; --enc-text:#ffd279; --link:#53bdeb; --mark:#b38a2e;
+  --avatar-bg:#6a7175; --avatar-fg:#cfd4d6; --doc:rgba(0,0,0,.18); --overlay:rgba(11,20,26,.95);
+  --wall:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23fff' stroke-opacity='.045' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 30h22a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6H30l-8 6v-6h-2a6 6 0 0 1-6-6V36a6 6 0 0 1 6-6z'/%3E%3Ccircle cx='110' cy='34' r='10'/%3E%3Cpath d='M106 34l3 3 6-6'/%3E%3Cpath d='M70 92l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z'/%3E%3Cpath d='M128 100c0-5 6-7 9-3 3-4 9-2 9 3 0 6-9 11-9 11s-9-5-9-11z'/%3E%3Cpath d='M24 118a14 14 0 0 1 28 0M30 118v8m16-8v8'/%3E%3Ccircle cx='100' cy='140' r='4'/%3E%3Cpath d='M60 20l6 6m0-6l-6 6M140 60h8m-4-4v8'/%3E%3C/g%3E%3C/svg%3E");
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font:14px/1.4 "Segoe UI","Helvetica Neue",Helvetica,"Lucida Grande",Arial,Ubuntu,Cantarell,"Fira Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji";overflow:hidden;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+input,select{font:inherit;color:inherit}
+[hidden]{display:none!important}
+svg{display:block;flex:none}
+.muted{color:var(--muted)}
+
+.app{display:flex;height:100vh;height:100dvh;width:100%}
+.ib{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:var(--icon);flex:none}
+.ib:hover,.ib.on{background:rgba(127,127,127,.15)}
+.actions{display:flex;align-items:center;gap:4px}
+.btn{background:var(--accent);color:#fff;border-radius:24px;padding:10px 24px;font-weight:500;display:inline-flex;gap:8px;align-items:center}
+.btn:hover{background:var(--accent-strong)}
+
+/* Sidebar */
+.side{width:30%;min-width:320px;max-width:440px;display:flex;flex-direction:column;background:var(--panel);border-right:1px solid var(--border)}
+.side-head,.chat-head,.drawer-head{height:59px;flex:none;display:flex;align-items:center;padding:0 16px;background:var(--head);gap:12px}
+.brand{font-size:19px;font-weight:600;flex:1}
+.side-search{padding:7px 12px;border-bottom:1px solid var(--border);flex:none}
+.sbox{display:flex;align-items:center;gap:14px;background:var(--input);border-radius:8px;height:35px;padding:0 12px;color:var(--icon)}
+.side .sbox{background:var(--head)}
+.sbox input{flex:1;border:0;outline:0;background:none;min-width:0;font-size:14px}
+.sbox input::placeholder{color:var(--muted)}
+.chat-list{flex:1;overflow-y:auto}
+.ci{display:flex;align-items:center;cursor:pointer;padding-left:13px;height:72px}
+.ci:hover{background:var(--hover)}
+.ci.active{background:var(--active)}
+.ci .av{margin-right:13px}
+.ci-body{flex:1;min-width:0;border-bottom:1px solid var(--border);height:100%;display:flex;flex-direction:column;justify-content:center;padding-right:15px}
+.ci-top{display:flex;align-items:baseline;gap:6px}
+.ci-name{flex:1;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-date{font-size:12px;color:var(--muted);flex:none}
+.ci-prev{font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.list-empty{text-align:center;padding:48px 24px;color:var(--icon)}
+.list-empty svg{margin:0 auto 8px;opacity:.5}
+.list-empty p{margin:6px 0}
+.list-empty .btn{margin-top:14px}
+
+.av{width:49px;height:49px;border-radius:50%;background:var(--avatar-bg);color:var(--avatar-fg);display:flex;align-items:center;justify-content:center;flex:none;overflow:hidden;font-weight:500;font-size:18px}
+.av svg{width:68%;height:68%}
+.av.sm{width:40px;height:40px;font-size:15px}
+.av.xl{width:200px;height:200px;margin:0 auto}
+.av.txt{color:#fff}
+
+/* Main */
+.main{flex:1;display:flex;min-width:0;position:relative}
+.welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;background:var(--head);border-bottom:6px solid var(--accent);color:var(--muted)}
+.welcome .hero{width:120px;height:120px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:28px}
+.welcome h1{font-weight:300;font-size:32px;color:var(--text);margin:0 0 14px}
+.welcome p{max-width:520px;margin:0 0 6px;font-size:14px;line-height:20px}
+.welcome .btn{margin-top:24px}
+.welcome .foot{margin-top:40px;display:flex;align-items:center;gap:6px;font-size:13px}
+.app.has-chat .welcome{display:none}
+.app:not(.has-chat) .chat{display:none}
+
+.chat{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--chat-bg)}
+.back{display:none}
+.who{display:flex;align-items:center;gap:13px;flex:1;min-width:0;cursor:pointer;height:100%}
+.who .av{width:40px;height:40px}
+.who-t{min-width:0}
+.who-n{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who-s{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{border:1px solid var(--accent);color:var(--accent);border-radius:16px;padding:4px 12px;font-size:13px;white-space:nowrap}
+.pill:hover{background:var(--accent);color:#fff}
+.date-wrap,.menu-wrap{position:relative}
+#dateInp{position:absolute;right:0;top:36px;width:1px;height:1px;opacity:0;pointer-events:none;border:0;padding:0}
+.menu{position:absolute;right:0;top:44px;background:var(--panel);border-radius:3px;box-shadow:0 2px 5px rgba(11,20,26,.26),0 2px 10px rgba(11,20,26,.16);padding:9px 0;z-index:30;min-width:200px}
+.menu button{display:block;width:100%;text-align:left;padding:12px 24px;font-size:14.5px}
+.menu button:hover{background:var(--hover)}
+
+.chat-body{flex:1;position:relative;min-height:0;background:var(--chat-bg) var(--wall)}
+.scroller{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden}
+.list{position:relative;padding:12px 0 10px}
+.chat-foot{flex:none;min-height:62px;background:var(--head);display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:13px;padding:10px 16px;text-align:center}
+
+/* Messages */
+.day{text-align:center;margin:12px 0 10px;padding:0 16px}
+.day span,.sys span,.float-date{display:inline-block;background:var(--chip);color:var(--chip-text);font-size:12.5px;padding:5px 12px 6px;border-radius:7.5px;box-shadow:var(--shadow)}
+.sys{text-align:center;margin:8px 0;padding:0 10%}
+.sys span{white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%}
+.sys.enc span{background:var(--enc);color:var(--enc-text);max-width:520px}
+.sys.enc svg{display:inline-block;vertical-align:-2px}
+.float-date{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;opacity:0;transition:opacity .3s;pointer-events:none}
+.float-date.show{opacity:1}
+
+.row{display:flex;padding:0 7%;margin-top:2px}
+.row.first{margin-top:12px}
+.row.out{justify-content:flex-end}
+.row.flash{animation:flash 2.2s ease-out}
+@keyframes flash{0%,45%{background:rgba(0,168,132,.22)}100%{background:transparent}}
+.bubble{position:relative;max-width:65%;min-width:0;padding:6px 7px 8px 9px;border-radius:7.5px;background:var(--in);box-shadow:var(--shadow);font-size:14.2px;line-height:19px}
+.out .bubble{background:var(--out)}
+.row.first .bubble{border-top-left-radius:0}
+.row.out.first .bubble{border-top-left-radius:7.5px;border-top-right-radius:0}
+.row.first .bubble:not(.sticker)::before{content:"";position:absolute;top:0;left:-8px;width:8px;height:13px;background:inherit;clip-path:polygon(0 0,100% 0,100% 100%)}
+.row.out.first .bubble:not(.sticker)::before{left:auto;right:-8px;clip-path:polygon(0 0,100% 0,0 100%)}
+.name{font-size:12.8px;font-weight:500;line-height:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.text{white-space:pre-wrap;overflow-wrap:anywhere}
+.text a{color:var(--link)}
+.text code{font-family:Consolas,Menlo,monospace;font-size:13px}
+.text.jumbo{font-size:40px;line-height:50px}
+.text mark{background:var(--mark);color:inherit;border-radius:2px}
+.spacer{display:inline-block;visibility:hidden;font-size:11px;line-height:1;padding-left:12px;white-space:nowrap}
+.meta{position:absolute;right:7px;bottom:3px;font-size:11px;line-height:15px;color:var(--muted);white-space:nowrap}
+.meta.static{position:static;display:block;text-align:right;padding:2px 4px 0}
+.meta.over{color:#fff;right:9px;bottom:6px;z-index:2;text-shadow:0 1px 1px rgba(0,0,0,.4)}
+.del{color:var(--muted);font-style:italic}
+.del svg{display:inline-block;vertical-align:-3px;margin-right:4px}
+
+.bubble.has-media{padding:3px}
+.has-media .name{padding:0 6px}
+.has-media .text{padding:5px 4px 4px 6px}
+.has-media .meta:not(.over):not(.static){right:7px}
+.media{position:relative;border-radius:6px;overflow:hidden;cursor:pointer;background:rgba(127,127,127,.18);width:330px;max-width:100%}
+.media .ph{height:220px;display:flex;align-items:center;justify-content:center;color:rgba(127,127,127,.7);flex-direction:column;gap:6px;font-size:12px;text-align:center;padding:10px;overflow-wrap:anywhere}
+.media img,.media video{display:none;width:100%;max-height:360px;object-fit:cover}
+.media.ready .ph{display:none}
+.media.ready img,.media.ready video{display:block}
+.media.vid{background:#000}
+.media .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:rgba(11,20,26,.55);color:#fff;display:flex;align-items:center;justify-content:center}
+.nocap .media::after{content:"";position:absolute;left:0;right:0;bottom:0;height:28px;background:linear-gradient(transparent,rgba(11,20,26,.45));pointer-events:none}
+.media.broken{cursor:pointer;background:rgba(127,127,127,.18)}
+.media.broken .play,.media.broken::after{display:none}
+.bubble.sticker{background:none;box-shadow:none;padding:0}
+.media.stk{width:160px;background:none;cursor:default}
+.media.stk .ph{height:160px}
+.media.stk img{object-fit:contain;max-height:160px}
+.sticker .meta{position:static;display:inline-block;float:right;margin-top:3px;background:var(--chip);border-radius:6px;padding:1px 6px;box-shadow:var(--shadow)}
+.sticker .name{background:var(--chip);border-radius:6px;padding:0 6px;display:inline-block;margin-bottom:2px}
+
+.doc{display:flex;align-items:center;gap:10px;background:var(--doc);border-radius:6px;padding:10px 12px;min-width:250px;max-width:330px;cursor:pointer}
+.doc.missing{cursor:default}
+.doc-ic{width:30px;height:38px;border-radius:3px;background:#8696a0;color:#fff;font-size:9px;font-weight:700;display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px;flex:none;text-transform:uppercase;position:relative;clip-path:polygon(0 0,68% 0,100% 24%,100% 100%,0 100%)}
+.doc-ic.pdf{background:#e2574c}.doc-ic.xls{background:#1d8f4e}.doc-ic.doc{background:#2b5797}.doc-ic.ppt{background:#d24726}.doc-ic.zip{background:#a5791f}.doc-ic.vcf{background:var(--accent);clip-path:circle(50%);width:38px;align-items:center;padding:0}
+.doc-body{flex:1;min-width:0}
+.doc-name{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.doc-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.doc-dl{color:var(--muted);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(127,127,127,.35)}
+.doc-dl:hover{color:var(--text)}
+
+.audio{display:flex;align-items:center;gap:10px;width:300px;max-width:100%;padding:6px 8px 0 6px}
+.ap-btn{width:34px;height:34px;color:var(--icon);display:flex;align-items:center;justify-content:center;flex:none}
+.ap-btn.loading{opacity:.4}
+.ap-track{flex:1;min-width:0}
+.ap-track input{width:100%;accent-color:var(--accent);margin:6px 0 2px}
+.ap-time{font-size:11px;color:var(--muted)}
+.ap-av{width:46px;height:46px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.ap-av.music{background:#f59b42}
+
+.down{position:absolute;right:20px;bottom:18px;width:42px;height:42px;border-radius:50%;background:var(--panel);color:var(--icon);box-shadow:0 1px 3px rgba(11,20,26,.3);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.6);pointer-events:none;transition:.15s;z-index:6}
+.down.show{opacity:1;transform:none;pointer-events:auto}
+
+/* Drawer */
+.drawer{width:30%;min-width:320px;max-width:440px;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column}
+.drawer-head{gap:20px;font-size:16px}
+.drawer-search{padding:8px 12px;border-bottom:1px solid var(--border);flex:none}
+.drawer-body{flex:1;overflow-y:auto;background:var(--panel)}
+.hint{padding:40px 24px;text-align:center;color:var(--muted)}
+.res-count{padding:12px 20px;font-size:13px;color:var(--accent)}
+.res{padding:12px 20px;border-bottom:1px solid var(--border);cursor:pointer}
+.res:hover{background:var(--hover)}
+.res-d{font-size:12px;color:var(--muted)}
+.res-t{margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}
+.res-t b{font-weight:500}
+.res mark{background:none;color:var(--accent);font-weight:600}
+.info{background:var(--head);min-height:100%}
+.card{background:var(--panel);padding:16px 26px;margin-bottom:10px;box-shadow:0 1px 3px rgba(11,20,26,.08)}
+.info-top{text-align:center;padding:28px 26px 22px}
+.info-top h2{font-weight:400;font-size:22px;margin:16px 0 4px;overflow-wrap:anywhere}
+.info-top p{margin:0;color:var(--muted)}
+.card-h{display:flex;justify-content:space-between;color:var(--muted);font-size:14px;margin-bottom:12px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat b{display:block;font-size:17px;font-weight:500}
+.stat span{font-size:12.5px;color:var(--muted)}
+.card select{width:100%;padding:8px;border-radius:6px;border:1px solid var(--border);background:var(--panel)}
+.card p.muted{margin:0 0 10px;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.thumb{aspect-ratio:1;background:rgba(127,127,127,.18);border-radius:4px;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(127,127,127,.8);position:relative}
+.thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.thumb.v{background:#1f2c33;color:#fff}
+.more{margin-top:10px;color:var(--accent);font-size:14px}
+.pl{display:flex;align-items:center;gap:12px;padding:8px 0}
+.pl-n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-c{font-size:12.5px;color:var(--muted)}
+.tag{font-size:11px;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:0 4px;margin-left:6px}
+.dl-row{display:flex;align-items:center;gap:12px;padding:8px 0;cursor:pointer}
+.dl-row:hover .doc-name{text-decoration:underline}
+
+/* Lightbox */
+.lb{position:fixed;inset:0;z-index:50;background:var(--overlay);display:flex;flex-direction:column}
+.lb-head{height:60px;display:flex;align-items:center;padding:0 12px 0 20px;gap:12px;flex:none}
+.lb-who{flex:1;min-width:0}
+.lb-who div:first-child{font-size:16px}
+.lb-who div:last-child{font-size:13px;color:var(--muted)}
+.lb-stage{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;gap:12px;padding:0 12px}
+.lb-media{flex:1;height:100%;display:flex;align-items:center;justify-content:center;min-width:0}
+.lb-media img,.lb-media video{max-width:100%;max-height:100%;object-fit:contain;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.lb-nav{width:48px;height:48px;border-radius:50%;background:rgba(127,127,127,.18);color:var(--icon);display:flex;align-items:center;justify-content:center;flex:none}
+.lb-nav:disabled{visibility:hidden}
+.lb-cap{flex:none;text-align:center;padding:12px 20px 20px;min-height:24px;white-space:pre-wrap;max-height:20vh;overflow:auto}
+
+/* Message menu, selection, editing */
+.mbtn{position:absolute;top:3px;right:3px;width:26px;height:22px;border-radius:0 6px 0 12px;display:flex;align-items:flex-start;justify-content:flex-end;color:var(--muted);opacity:0;z-index:3;background:radial-gradient(at top right,var(--in) 55%,transparent 75%)}
+.out .mbtn{background:radial-gradient(at top right,var(--out) 55%,transparent 75%)}
+.has-media .mbtn{color:#fff;background:radial-gradient(at top right,rgba(11,20,26,.5) 30%,transparent 70%)}
+.bubble:hover .mbtn,.mbtn:focus-visible{opacity:1}
+.selecting .mbtn{display:none}
+.row,.sys{position:relative}
+.selecting .row,.selecting .sys{cursor:pointer;padding-left:calc(7% + 34px)}
+.selecting .row::after,.selecting .sys::after{content:"";position:absolute;left:max(12px,calc(7% - 8px));top:50%;width:18px;height:18px;margin-top:-9px;border:2px solid var(--muted);border-radius:3px;box-sizing:border-box}
+.selecting .row.first::after{margin-top:-3px}
+.selecting .sel::after{background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E") center/14px no-repeat;border-color:var(--accent)}
+.sel{background:rgba(0,168,132,.14)}
+.selecting a,.selecting .media,.selecting .doc,.selecting .audio{pointer-events:none}
+.ctx{position:fixed;z-index:45;background:var(--panel);border-radius:3px;box-shadow:0 2px 5px rgba(11,20,26,.26),0 2px 10px rgba(11,20,26,.16);padding:9px 0;min-width:180px}
+.ctx button{display:block;width:100%;text-align:left;padding:10px 24px;font-size:14.5px}
+.ctx button:hover{background:var(--hover)}
+.ctx .danger,.danger-t{color:#ea0038}
+.chat-foot.bar{justify-content:flex-start;text-align:left;color:var(--text);font-size:14.5px;gap:12px}
+.chat-foot.bar .grow{flex:1;min-width:0}
+.chat-foot.pending{background:var(--enc);color:var(--enc-text)}
+.chat-foot .tbtn{padding:8px 16px;border-radius:20px;font-weight:500;font-size:14px;color:var(--accent);flex:none}
+.chat-foot .tbtn:hover{background:rgba(127,127,127,.15)}
+.chat-foot .tbtn.primary{background:var(--accent);color:#fff}
+.chat-foot .tbtn.primary:hover{background:var(--accent-strong)}
+.unsaved{color:var(--accent);font-size:12px;font-weight:500;margin-left:6px}
+.dl-row .ib{width:34px;height:34px;opacity:.6}
+.dl-row .ib:hover{opacity:1;color:#ea0038}
+.modal-bg{position:fixed;inset:0;z-index:65;background:rgba(11,20,26,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--panel);border-radius:3px;box-shadow:0 17px 50px rgba(11,20,26,.19),0 12px 15px rgba(11,20,26,.24);padding:22px 24px 20px;width:500px;max-width:100%}
+.modal h3{margin:0 0 14px;font-weight:400;font-size:20px}
+.modal-t{color:var(--muted);font-size:14.2px;line-height:20px}
+.modal-t p{margin:0 0 8px}
+.modal-b{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px;margin-top:22px}
+.modal-b button{border:1px solid var(--border);color:var(--accent);border-radius:24px;padding:9px 22px;font-weight:500;font-size:14px}
+.modal-b button:hover{background:var(--hover)}
+.modal-b button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.modal-b button.danger{background:#ea0038;border-color:#ea0038;color:#fff}
+
+/* iPhone / touch: safe areas, no zoom-on-focus, long-press instead of hover */
+.app{padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left)}
+.chat-foot{padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+.chat-list{padding-bottom:env(safe-area-inset-bottom)}
+.lb-head{margin-top:env(safe-area-inset-top)}
+.lb-cap{padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+@media (hover: none){
+  .mbtn{opacity:.75}
+  .bubble,.sys span,.media img{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+  .ib:hover,.menu button:hover,.ctx button:hover,.ci:not(.active):hover,.res:hover{background:none}
+  .ctx button{padding:13px 24px}
+}
+@media (pointer: coarse){
+  input,select{font-size:16px!important}
+}
+
+/* Overlays */
+.drop{position:fixed;inset:0;z-index:60;background:rgba(0,168,132,.88);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;padding:24px;text-align:center;pointer-events:none}
+.drop div{border:3px dashed rgba(255,255,255,.8);border-radius:16px;padding:48px 40px}
+.loading{position:fixed;inset:0;z-index:70;background:rgba(11,20,26,.45);display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;color:#fff}
+.spin{width:44px;height:44px;border:4px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#323739;color:#fff;padding:12px 20px;border-radius:6px;z-index:80;max-width:calc(100% - 32px);box-shadow:0 2px 10px rgba(0,0,0,.3)}
+
+@media (max-width:1000px){
+  .row{padding:0 4%}
+  .bubble{max-width:80%}
+  .drawer{position:absolute;inset:0;width:auto;max-width:none;z-index:20}
+}
+@media (max-width:760px){
+  .side{width:100%;max-width:none;min-width:0;border-right:0}
+  .main{display:none}
+  .app.has-chat .side{display:none}
+  .app.has-chat .main{display:flex}
+  .back{display:inline-flex}
+  .chat-head{padding:0 8px 0 4px;gap:6px}
+  .row{padding:0 16px}
+  .bubble{max-width:88%}
+  .media{width:260px}
+  .doc{min-width:0}
+  .who-s{display:none}
+  .pill{display:none}
+  .lb-nav{display:none}
+  .lb-stage{padding:0}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="side">
+    <header class="side-head">
+      <div class="brand">Chats</div>
+      <div class="actions">
+        <button class="ib" id="themeBtn" title="Toggle dark mode" aria-label="Toggle dark mode"></button>
+        <button class="ib" id="openBtn" title="Open export (.zip)" aria-label="Open export"></button>
+      </div>
+    </header>
+    <div class="side-search"><label class="sbox"><span id="filterIco"></span><input id="chatFilter" placeholder="Search chats" autocomplete="off"></label></div>
+    <div class="chat-list" id="chatList"></div>
+  </aside>
+
+  <main class="main">
+    <section class="welcome" id="welcome">
+      <div class="hero" id="heroIco"></div>
+      <h1>Chat Export Viewer</h1>
+      <p>Open a WhatsApp chat export (.zip) to read it the way it looked in the app &mdash; photos, videos, voice notes and documents included.</p>
+      <p>Export from WhatsApp: open a chat &rarr; &#8942; More &rarr; Export chat &rarr; Include media.</p>
+      <button class="btn" data-open id="welcomeOpen">Open export</button>
+      <p style="margin-top:10px">or drop the .zip anywhere on this page</p>
+      <div class="foot" id="welcomeFoot"></div>
+    </section>
+
+    <section class="chat" id="chat">
+      <header class="chat-head">
+        <button class="ib back" id="backBtn" title="Back" aria-label="Back"></button>
+        <div class="who" id="who" title="Chat info"><div id="headAv"></div><div class="who-t"><div class="who-n" id="headName"></div><div class="who-s" id="headSub"></div></div></div>
+        <button class="pill" id="mePill" hidden>Which one is you?</button>
+        <div class="actions">
+          <span class="date-wrap"><button class="ib" id="dateBtn" title="Jump to date" aria-label="Jump to date"></button><input type="date" id="dateInp" tabindex="-1" aria-hidden="true"></span>
+          <button class="ib" id="searchBtn" title="Search messages" aria-label="Search messages"></button>
+          <span class="menu-wrap">
+            <button class="ib" id="menuBtn" title="Menu" aria-label="Menu"></button>
+            <div class="menu" id="menu" hidden>
+              <button data-act="info">Chat info</button>
+              <button data-act="search">Search messages</button>
+              <button data-act="date">Jump to date</button>
+              <button data-act="latest">Go to latest message</button>
+              <button data-act="select">Select messages</button>
+              <button data-act="close">Close chat</button>
+            </div>
+          </span>
+        </div>
+      </header>
+      <div class="chat-body">
+        <div class="scroller" id="scroller"><div class="list" id="list"></div></div>
+        <div class="float-date" id="floatDate"></div>
+        <button class="down" id="downBtn" title="Scroll to latest" aria-label="Scroll to latest"></button>
+      </div>
+      <footer class="chat-foot" id="chatFoot"></footer>
+    </section>
+
+    <aside class="drawer" id="drawer" hidden>
+      <header class="drawer-head"><button class="ib" id="drawerClose" title="Close" aria-label="Close"></button><div id="drawerTitle"></div></header>
+      <div class="drawer-search" id="drawerSearch"><label class="sbox"><span id="searchIco"></span><input id="searchInp" placeholder="Search…" autocomplete="off"></label></div>
+      <div class="drawer-body" id="drawerBody"></div>
+    </aside>
+  </main>
+</div>
+
+<div class="lb" id="lb" hidden>
+  <div class="lb-head">
+    <div class="lb-who" id="lbWho"></div>
+    <div class="actions">
+      <button class="ib" id="lbJump" title="Show in chat" aria-label="Show in chat"></button>
+      <button class="ib" id="lbDl" title="Download" aria-label="Download"></button>
+      <button class="ib" id="lbDel" title="Delete" aria-label="Delete"></button>
+      <button class="ib" id="lbClose" title="Close" aria-label="Close"></button>
+    </div>
+  </div>
+  <div class="lb-stage">
+    <button class="lb-nav" id="lbPrev" title="Previous" aria-label="Previous"></button>
+    <div class="lb-media" id="lbMedia"></div>
+    <button class="lb-nav" id="lbNext" title="Next" aria-label="Next"></button>
+  </div>
+  <div class="lb-cap" id="lbCap"></div>
+</div>
+<div class="ctx" id="ctx" hidden></div>
+<div class="modal-bg" id="modal" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h3 id="modalTitle"></h3><div class="modal-t" id="modalText"></div><div class="modal-b" id="modalBtns"></div></div></div>
+<div class="drop" id="drop" hidden><div>Drop your WhatsApp export (.zip) to open it</div></div>
+<div class="loading" id="loading" hidden><div class="spin"></div><div id="loadingText"></div></div>
+<div class="toast" id="toast" hidden></div>
+<input type="file" id="fileInp" accept=".zip,.txt,application/zip" multiple hidden>
+
+<script>
+'use strict';
+const PAGE = 150;
+
+/* ---------- Icons (Material Design, Apache 2.0) ---------- */
+const I = {
+  search:'M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z',
+  close:'M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z',
+  more:'M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z',
+  back:'M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z',
+  down:'M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z',
+  cal:'M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z',
+  dl:'M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z',
+  file:'M6 2c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z',
+  lock:'M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z',
+  block:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9A7.902 7.902 0 0 1 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1A7.902 7.902 0 0 1 20 12c0 4.42-3.58 8-8 8z',
+  photo:'M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z',
+  video:'M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z',
+  mic:'M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z',
+  music:'M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z',
+  play:'M8 5v14l11-7z',
+  pause:'M6 19h4V5H6v14zm8-14v14h4V5h-4z',
+  prev:'M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z',
+  next:'M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z',
+  moon:'M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z',
+  sun:'M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 0 0-1.41 0 .996.996 0 0 0 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 0 0-1.41 0 .996.996 0 0 0 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 0 0 0-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 0 0 0-1.41.996.996 0 0 0-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 0 0 0-1.41.996.996 0 0 0-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z',
+  add:'M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z',
+  person:'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z',
+  group:'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',
+  chat:'M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z',
+  trash:'M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z',
+  goto:'M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12v-3H7V9h6V6l4 4-4 4z'
+};
+const ico = (n, s = 24) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" aria-hidden="true"><path fill="currentColor" d="${I[n]}"/></svg>`;
+
+/* ---------- Helpers ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const extOf = n => ((n.match(/\.([^./\\]+)$/) || [])[1] || '').toLowerCase();
+const TF = new Intl.DateTimeFormat(undefined, {hour:'numeric', minute:'2-digit'});
+const DF = new Intl.DateTimeFormat(undefined, {day:'numeric', month:'short', year:'numeric'});
+const DLF = new Intl.DateTimeFormat(undefined, {day:'numeric', month:'long', year:'numeric'});
+const WF = new Intl.DateTimeFormat(undefined, {weekday:'long'});
+const SDF = new Intl.DateTimeFormat(undefined, {day:'2-digit', month:'2-digit', year:'numeric'});
+const SEG = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter() : null;
+const num = n => n.toLocaleString();
+const BIDI = /[‎‏‪-‮⁦-⁩]/g;
+const MIME = {jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',gif:'image/gif',webp:'image/webp',bmp:'image/bmp',heic:'image/heic',heif:'image/heif',avif:'image/avif',
+  mp4:'video/mp4',m4v:'video/mp4',mov:'video/quicktime',webm:'video/webm','3gp':'video/3gpp',mkv:'video/x-matroska',
+  opus:'audio/ogg',ogg:'audio/ogg',oga:'audio/ogg',m4a:'audio/mp4',mp3:'audio/mpeg',aac:'audio/aac',wav:'audio/wav',amr:'audio/amr',
+  pdf:'application/pdf',txt:'text/plain',vcf:'text/vcard',json:'application/json',csv:'text/csv',html:'text/plain',htm:'text/plain'};
+const COLORS = ['#e542a3','#1f7aec','#d9730d','#008069','#7f66ff','#c4532d','#0093a7','#a15c00','#5e47de','#e26e00','#02a698','#d3396d','#6b8e23','#b04632'];
+function color(name){ let h = 0; for (const ch of String(name)) h = (h * 31 + ch.codePointAt(0)) | 0; return COLORS[Math.abs(h) % COLORS.length]; }
+function initials(name){ const w = String(name).replace(/[^\p{L}\p{N}\s]/gu, '').trim().split(/\s+/).filter(Boolean); return ((w[0] || '?')[0] + (w.length > 1 ? w[w.length - 1][0] : '')).toUpperCase(); }
+function fmtSize(b){ if (b < 1024) return b + ' B'; const u = ['kB','MB','GB']; let i = -1; do { b /= 1024; i++; } while (b >= 1024 && i < 2); return (b < 10 ? b.toFixed(1) : Math.round(b)) + ' ' + u[i]; }
+function dur(s){ if (!isFinite(s)) return '0:00'; s = Math.round(s); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+function dayKey(d){ return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate(); }
+function dayLabel(d){
+  const now = new Date(), t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate()), d0 = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const diff = Math.round((t0 - d0) / 864e5);
+  if (diff === 0) return 'Today';
+  if (diff === 1) return 'Yesterday';
+  if (diff > 1 && diff < 7) return WF.format(d);
+  return DLF.format(d);
+}
+function listDate(d){
+  const diff = Math.round((new Date().setHours(0,0,0,0) - new Date(d).setHours(0,0,0,0)) / 864e5);
+  return diff === 0 ? TF.format(d) : diff === 1 ? 'Yesterday' : SDF.format(d);
+}
+function isoDay(d){ return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+let toastT;
+function toast(msg){ const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 6000); }
+function store(k, v){ try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} }
+function load(k){ try { return localStorage.getItem(k); } catch { return null; } }
+
+/* ---------- Zip reader (reads lazily from the File, no dependencies) ---------- */
+class Zip {
+  constructor(file){ this.file = file; this.entries = []; this.all = []; }
+  async read(a, b){ return new DataView(await this.file.slice(a, b).arrayBuffer()); }
+  async init(){
+    const f = this.file, size = f.size, tailLen = Math.min(size, 65557);
+    const tail = await this.read(size - tailLen, size);
+    let eocd = -1;
+    for (let i = tailLen - 22; i >= 0; i--) if (tail.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+    if (eocd < 0) throw new Error('this is not a valid .zip file');
+    let count = tail.getUint16(eocd + 10, true), cdSize = tail.getUint32(eocd + 12, true), cdOff = tail.getUint32(eocd + 16, true);
+    if (count === 0xffff || cdSize === 0xffffffff || cdOff === 0xffffffff) {
+      const locPos = size - tailLen + eocd - 20;
+      if (locPos >= 0) {
+        const loc = await this.read(locPos, locPos + 20);
+        if (loc.getUint32(0, true) === 0x07064b50) {
+          const recOff = Number(loc.getBigUint64(8, true));
+          const rec = await this.read(recOff, recOff + 56);
+          if (rec.getUint32(0, true) === 0x06064b50) {
+            count = Number(rec.getBigUint64(32, true)); cdSize = Number(rec.getBigUint64(40, true)); cdOff = Number(rec.getBigUint64(48, true));
+          }
+        }
+      }
+    }
+    const cd = await this.read(cdOff, cdOff + cdSize), u8 = new Uint8Array(cd.buffer), dec = new TextDecoder();
+    let p = 0;
+    for (let n = 0; n < count && p + 46 <= cd.byteLength; n++) {
+      if (cd.getUint32(p, true) !== 0x02014b50) break;
+      const flags = cd.getUint16(p + 8, true), method = cd.getUint16(p + 10, true);
+      let comp = cd.getUint32(p + 20, true), uncomp = cd.getUint32(p + 24, true), off = cd.getUint32(p + 42, true);
+      const nl = cd.getUint16(p + 28, true), el = cd.getUint16(p + 30, true), cl = cd.getUint16(p + 32, true);
+      const name = dec.decode(u8.subarray(p + 46, p + 46 + nl));
+      let e = p + 46 + nl; const eEnd = e + el;
+      while (e + 4 <= eEnd) {
+        const id = cd.getUint16(e, true), sz = cd.getUint16(e + 2, true);
+        if (id === 1) {
+          let q = e + 4;
+          if (uncomp === 0xffffffff) { uncomp = Number(cd.getBigUint64(q, true)); q += 8; }
+          if (comp === 0xffffffff) { comp = Number(cd.getBigUint64(q, true)); q += 8; }
+          if (off === 0xffffffff) { off = Number(cd.getBigUint64(q, true)); }
+        }
+        e += 4 + sz;
+      }
+      // Everything needed to copy the entry into a rewritten zip without recompressing it
+      const entry = {name, method, comp, size: uncomp, off, flags, encrypted: !!(flags & 1),
+        madeBy: cd.getUint16(p + 4, true), time: cd.getUint16(p + 12, true), date: cd.getUint16(p + 14, true), crc: cd.getUint32(p + 16, true),
+        intAttr: cd.getUint16(p + 36, true), extAttr: cd.getUint32(p + 38, true), nameBytes: u8.slice(p + 46, p + 46 + nl)};
+      this.all.push(entry);
+      if (!name.endsWith('/') && !/(^|\/)__MACOSX\//.test(name)) this.entries.push(entry);
+      p = eEnd + cl;
+    }
+  }
+  async dataStart(entry){
+    if (entry.start == null) {
+      const h = await this.read(entry.off, entry.off + 30);
+      if (h.getUint32(0, true) !== 0x04034b50) throw new Error('the zip file is damaged');
+      entry.start = entry.off + 30 + h.getUint16(26, true) + h.getUint16(28, true);
+    }
+    return entry.start;
+  }
+  async blob(entry, type = ''){
+    if (entry.encrypted) throw new Error('password-protected zips are not supported');
+    const start = await this.dataStart(entry);
+    if (entry.method === 0) return this.file.slice(start, start + entry.comp, type);
+    if (entry.method === 8) {
+      const stream = this.file.slice(start, start + entry.comp).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+      return new Blob([await new Response(stream).blob()], {type});
+    }
+    throw new Error('unsupported zip compression method ' + entry.method);
+  }
+}
+
+/* ---------- Chat parser (Android + iOS exports, any date order, 12/24h) ---------- */
+const HDR = /^\[?(\d{1,4})([\/.\-])(\d{1,2})\2(\d{1,4}),?\s+(\d{1,2})[:.](\d{2})(?:[:.](\d{2}))?\s*([ap]\.?\s?m\.?)?(?:\]\s*|\s+[-–]\s+)([\s\S]*)$/i;
+const OMIT = /^<?[^<>\n]*\b(omitted|ausgelassen|omitido|omis|omesso|weggelaten)>?$/i;
+const DELETED = /^(This message was deleted|You deleted this message|Deleted message)\.?$/i;
+const EDITED = /\s*<This message was edited>\s*$/i;
+const ATTACHED_IOS = /<attached:\s*([^>]+?)\s*>/i;
+
+function kindOf(name){
+  const e = extOf(name);
+  if (/^(jpe?g|png|gif|bmp|heic|heif|avif)$/.test(e)) return 'image';
+  if (e === 'webp') return /STK-|STICKER/i.test(name) ? 'sticker' : 'image';
+  if (/^(mp4|mov|3gp|m4v|webm|mkv|avi)$/.test(e)) return 'video';
+  if (/^(opus|ogg|oga|m4a|mp3|aac|wav|amr)$/.test(e)) return 'audio';
+  if (e === 'vcf') return 'contact';
+  return 'doc';
+}
+
+function mkDate(r, order){
+  let [a, b, c] = r.p.map(Number), y, mo, d;
+  if (order === 'ymd') { y = a; mo = b; d = c; } else if (order === 'dmy') { d = a; mo = b; y = c; } else { mo = a; d = b; y = c; }
+  if (y < 100) y += 2000;
+  let h = r.h;
+  if (r.ap) { const pm = /^p/i.test(r.ap); if (pm && h < 12) h += 12; if (!pm && h === 12) h = 0; }
+  return new Date(y, mo - 1, d, h, r.mi, r.s);
+}
+
+function parseChat(text, lookup){
+  const recs = [], preamble = [];
+  for (const raw of text.replace(/^﻿/, '').split(/\r\n|\n|\r/)) {
+    const line = raw.replace(/^[‎‏﻿‪-‮⁦-⁩]+/, '').replace(/[  ]/g, ' ');
+    const m = HDR.exec(line);
+    if (m) recs.push({p: [m[1], m[3], m[4]], h: +m[5], mi: +m[6], s: +(m[7] || 0), ap: m[8], rest: m[9], raw: [raw]});
+    else if (!recs.length) preamble.push(raw);
+    else recs[recs.length - 1].raw.push(raw), recs[recs.length - 1].rest += '\n' + raw.replace(/[  ]/g, ' ');
+  }
+  let order;
+  if (recs.some(r => r.p[0].length === 4)) order = 'ymd';
+  else if (recs.some(r => +r.p[0] > 12)) order = 'dmy';
+  else if (recs.some(r => +r.p[1] > 12)) order = 'mdy';
+  else {
+    const bad = o => { let n = 0, prev = 0; for (const r of recs) { const t = +mkDate(r, o); if (t < prev) n++; prev = t; } return n; };
+    order = bad('mdy') < bad('dmy') ? 'mdy' : 'dmy';
+  }
+
+  const msgs = [], counts = new Map();
+  for (const r of recs) {
+    const ts = mkDate(r, order);
+    const rest = r.rest, k = rest.indexOf(': ');
+    let sender = null, body = rest, system = false;
+    if (k > 0 && k <= 120 && !rest.slice(0, k).includes('\n')) {
+      sender = rest.slice(0, k).replace(BIDI, '').trim();
+      body = rest.slice(k + 2);
+      if (/^[‎‏]/.test(body)) system = 'maybe'; // iOS marks system notices with a leading LRM
+    } else system = true;
+    body = body.replace(BIDI, '');
+    const msg = {k: msgs.length, raw: r.raw, ts, day: dayKey(ts), sender, text: body.trim(), att: null, omitted: false, deleted: false, edited: false, system: false, removed: false};
+    if (EDITED.test(msg.text)) { msg.edited = true; msg.text = msg.text.replace(EDITED, ''); }
+
+    if (!system || system === 'maybe') {
+      const am = ATTACHED_IOS.exec(msg.text);
+      let attName = null;
+      if (am) { attName = am[1]; msg.text = msg.text.replace(am[0], '').trim(); }
+      else {
+        const lines = msg.text.split('\n'), fl = lines[0].trim();
+        const fm = /^(.+?)\s*\(([^()]*)\)$/.exec(fl);
+        const cand = fm ? fm[1].trim() : fl;
+        if (cand && /\.[A-Za-z0-9]{1,5}$/.test(cand) && (lookup(cand) || (fm && /attached|adjunt|joint|angeh|anexad|allegat|bijgevoegd|lampir/i.test(fm[2])))) {
+          attName = cand; msg.text = lines.slice(1).join('\n').trim();
+        }
+      }
+      if (attName) {
+        const kind = kindOf(attName);
+        const entry = lookup(attName) || null;
+        msg.att = {name: attName, label: attName.replace(/^\d{8}-/, ''), entry, orig: entry, kind, meta: ''};
+        if ((kind === 'doc' || kind === 'contact') && msg.text.includes('•')) { msg.att.meta = msg.text.split('•').slice(1).join('•').trim(); msg.text = ''; }
+        if (kind === 'doc' && msg.text === msg.att.label) msg.text = '';
+        system = false;
+      } else if (msg.text.length < 90 && OMIT.test(msg.text)) { msg.omitted = true; system = false; }
+      else if (DELETED.test(msg.text)) { msg.deleted = true; system = false; }
+    }
+    if (system) { msg.system = true; msg.sender = null; }
+    msgs.push(msg);
+  }
+  return {msgs, preamble};
+}
+
+/* ---------- Text formatting ---------- */
+const URL_RE = /\b(?:https?:\/\/|www\.)[^\s<>"]*[^\s<>".,:;'!?)\]}]/gi;
+function inline(s){
+  let h = esc(s);
+  h = h.replace(/```([\s\S]+?)```/g, '<code>$1</code>');
+  h = h.replace(/(^|[^\w*])\*(?!\s)([^*\n]+?)(?<!\s)\*(?!\w)/g, '$1<b>$2</b>');
+  h = h.replace(/(^|[^\w_])_(?!\s)([^_\n]+?)(?<!\s)_(?!\w)/g, '$1<i>$2</i>');
+  h = h.replace(/(^|[^\w~])~(?!\s)([^~\n]+?)(?<!\s)~(?!\w)/g, '$1<s>$2</s>');
+  return h;
+}
+function fmt(t){
+  let out = '', last = 0;
+  t.replace(URL_RE, (m, off) => {
+    out += inline(t.slice(last, off));
+    const href = /^www\./i.test(m) ? 'http://' + m : m;
+    out += `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(m)}</a>`;
+    last = off + m.length; return m;
+  });
+  return out + inline(t.slice(last));
+}
+const EMOJI_ONLY = /^(?:\p{Extended_Pictographic}|\p{Emoji_Modifier}|\p{Regional_Indicator}|‍|️|[#*0-9]️?⃣|\s)+$/u;
+function isJumbo(t){
+  if (!t || t.length > 40 || !EMOJI_ONLY.test(t) || !/\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(t)) return false;
+  const s = t.replace(/\s/g, '');
+  return (SEG ? [...SEG.segment(s)].length : Math.ceil(s.length / 2)) <= 3;
+}
+function markText(root, q){
+  if (!root || !q) return;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), nodes = [];
+  while (walker.nextNode()) { const n = walker.currentNode; if (!n.parentElement.closest('.spacer,.meta,mark')) nodes.push(n); }
+  for (const n of nodes) {
+    const lower = n.data.toLowerCase(); let i = lower.indexOf(q);
+    if (i < 0) continue;
+    const frag = document.createDocumentFragment(); let last = 0;
+    while (i >= 0) {
+      frag.append(n.data.slice(last, i));
+      const mk = document.createElement('mark'); mk.textContent = n.data.slice(i, i + q.length); frag.append(mk);
+      last = i + q.length; i = lower.indexOf(q, last);
+    }
+    frag.append(n.data.slice(last)); n.replaceWith(frag);
+  }
+}
+
+/* ---------- State ---------- */
+const S = {chats: [], cur: null, start: 0, end: 0, stick: true, q: '', drawer: null, selecting: false, sel: new Set(), lastSel: -1};
+const app = $('app'), scroller = $('scroller'), list = $('list');
+let chatSeq = 0, curAudio = null;
+
+/* ---------- Loading files ---------- */
+function showLoading(t){ $('loadingText').textContent = t; $('loading').hidden = false; }
+// Items are Files or {file, handle}; a FileSystemFileHandle lets us write changes back to the original file
+async function handleFiles(items){
+  let opened = null;
+  for (const it of items) {
+    const f = it instanceof Blob ? it : it.file, handle = it instanceof Blob ? null : it.handle;
+    try {
+      showLoading(`Opening ${f.name}…`);
+      const chat = await loadChat(f, handle);
+      const dup = S.chats.find(c => c.fileName === f.name && c.fileSize === f.size);
+      if (dup) closeChat(dup, true);
+      S.chats.unshift(chat);
+      opened = chat;
+    } catch (e) { console.error(e); toast(`Couldn't open ${f.name}: ${e.message}`); }
+  }
+  $('loading').hidden = true;
+  renderList();
+  if (opened) openChat(opened);
+}
+
+function chatNameFrom(n){
+  return n.replace(/^.*[\/\\]/, '').replace(/\.(zip|txt)$/i, '').replace(/\s*\(\d+\)$/, '')
+    .replace(/^WhatsApp\s+Chat\s*(with|-|–|:)?\s*/i, '').replace(/^Chat\s+(de|mit|con|com|avec|met)\s+/i, '').trim() || 'Chat';
+}
+
+async function loadChat(f, handle = null){
+  let zip = null, text, txtName = f.name, txtEntry = null;
+  const byName = new Map(), byLower = new Map();
+  if (/\.txt$/i.test(f.name)) text = await f.text();
+  else {
+    if (typeof DecompressionStream !== 'function') throw new Error('this browser cannot unzip files. Please use a current Chrome, Edge, Firefox or Safari.');
+    zip = new Zip(f); await zip.init();
+    for (const e of zip.entries) { const b = e.name.split('/').pop(); if (!byName.has(b)) byName.set(b, e); if (!byLower.has(b.toLowerCase())) byLower.set(b.toLowerCase(), e); }
+    const txts = zip.entries.filter(e => /\.txt$/i.test(e.name));
+    if (!txts.length) throw new Error('no chat .txt file was found inside the zip');
+    const t = txts.find(e => /(^|\/)_chat\.txt$/i.test(e.name)) || txts.find(e => /whatsapp/i.test(e.name)) || [...txts].sort((a, b) => b.size - a.size)[0];
+    txtName = t.name.split('/').pop();
+    txtEntry = t;
+    text = await (await zip.blob(t, 'text/plain')).text();
+  }
+  const lookup = n => byName.get(n) || byLower.get(n.toLowerCase());
+  const {msgs: all, preamble} = parseChat(text, lookup);
+  if (!all.length) throw new Error("no messages were recognised – is this a WhatsApp chat export?");
+
+  const name = chatNameFrom(/^_?chat\.txt$/i.test(txtName) ? f.name : txtName);
+  const c = {id: ++chatSeq, name, fileName: f.name, fileSize: f.size, handle, zip, txtEntry, lookup, all, preamble,
+    eol: text.includes('\r\n') ? '\r\n' : '\n', bom: text.charCodeAt(0) === 0xfeff, ops: [], savedDrops: new Set(), urls: new Map()};
+  rebuild(c);
+  const participants = c.participants;
+  c.isGroup = participants.length > 2 || all.some(m => m.system && /\b(created group|created this group|added|joined using|changed the group|changed this group|left)\b/i.test(m.text));
+  let me = load('wcv-me:' + name);
+  if (!participants.some(p => p.name === me)) me = null;
+  if (!me && participants.length === 2) {
+    const other = participants.find(p => p.name.toLowerCase() === name.toLowerCase());
+    if (other) me = participants.find(p => p !== other).name;
+  }
+  c.me = me;
+  return c;
+}
+
+// Recompute everything derived from the messages that are still kept
+function rebuild(c){
+  const msgs = c.msgs = c.all.filter(m => !m.removed);
+  const counts = new Map();
+  c.media = []; c.docs = [];
+  msgs.forEach((m, i) => {
+    if (!m.system) counts.set(m.sender, (counts.get(m.sender) || 0) + 1);
+    if (m.att && m.att.entry) {
+      if (m.att.kind === 'image' || m.att.kind === 'video') c.media.push(i);
+      else if (m.att.kind === 'doc' || m.att.kind === 'contact') c.docs.push(i);
+    }
+  });
+  c.participants = [...counts].map(([name, count]) => ({name, count})).sort((a, b) => b.count - a.count);
+  let last = msgs.length - 1;
+  while (last > 0 && msgs[last].system) last--;
+  c.last = msgs[last] || null;
+}
+
+function mediaURL(c, name){
+  if (!c.urls.has(name)) {
+    const entry = c.lookup(name);
+    const p = entry && c.zip ? c.zip.blob(entry, MIME[extOf(name)] || '').then(b => URL.createObjectURL(b)) : Promise.reject(new Error('file not included in export'));
+    p.catch(() => c.urls.delete(name));
+    c.urls.set(name, p);
+  }
+  return c.urls.get(name);
+}
+function release(c){
+  for (const p of c.urls.values()) p.then(u => URL.revokeObjectURL(u), () => {});
+  c.urls.clear();
+  if (curAudio) { curAudio.pause(); curAudio = null; }
+}
+
+/* ---------- Sidebar ---------- */
+function avatar(c, cls = ''){ return `<div class="av ${cls}">${ico(c.isGroup ? 'group' : 'person')}</div>`; }
+function pAvatar(name, cls = ''){ return `<div class="av txt ${cls}" style="background:${color(name)}">${esc(initials(name))}</div>`; }
+function attLabel(a){
+  return {image: '📷 Photo', video: '🎥 Video', audio: '🎤 Audio', sticker: 'Sticker', contact: '👤 ' + a.label.replace(/\.vcf$/i, '')}[a.kind] || '📄 ' + a.label;
+}
+function preview(c, m){
+  if (!m) return '';
+  let p = m.system ? '' : m.sender === c.me ? 'You: ' : c.isGroup ? m.sender + ': ' : '';
+  p += m.deleted ? 'This message was deleted' : m.att ? attLabel(m.att) + (m.text ? ' ' + m.text : '') : m.text;
+  return p.replace(/\s+/g, ' ');
+}
+function renderList(){
+  const el = $('chatList'), f = $('chatFilter').value.trim().toLowerCase();
+  if (!S.chats.length) {
+    el.innerHTML = `<div class="list-empty">${ico('chat', 56)}<p>No chats opened yet</p><p class="muted">Open a WhatsApp export (.zip) to start reading.</p><button class="btn" data-open>${ico('add', 20)} Open export</button></div>`;
+    return;
+  }
+  const shown = S.chats.filter(c => !f || c.name.toLowerCase().includes(f));
+  el.innerHTML = shown.length ? shown.map(c => `<div class="ci${c === S.cur ? ' active' : ''}" data-id="${c.id}" title="${esc(c.fileName)}">${avatar(c)}<div class="ci-body"><div class="ci-top"><span class="ci-name">${esc(c.name)}</span>${c.ops.length ? '<span class="unsaved">Unsaved</span>' : ''}<span class="ci-date">${c.last ? listDate(c.last.ts) : ''}</span></div><div class="ci-prev">${esc(preview(c, c.last))}</div></div></div>`).join('')
+    : `<div class="hint">No chats match “${esc(f)}”</div>`;
+}
+
+/* ---------- Chat view ---------- */
+function renderHead(){
+  const c = S.cur, n = c.msgs.length;
+  $('headAv').innerHTML = avatar(c);
+  $('headName').textContent = c.name;
+  $('headSub').textContent = c.isGroup
+    ? c.participants.map(p => p.name === c.me ? 'You' : p.name).join(', ')
+    : n ? `${num(n)} messages · ${DF.format(c.msgs[0].ts)} – ${DF.format(c.msgs[n - 1].ts)}` : 'No messages';
+  $('mePill').hidden = !!c.me || c.participants.length < 2;
+  if (n) { $('dateInp').min = isoDay(c.msgs[0].ts); $('dateInp').max = isoDay(c.msgs[n - 1].ts); }
+  renderFoot();
+}
+
+// The footer doubles as the selection bar and the unsaved-changes bar
+function renderFoot(){
+  const c = S.cur, foot = $('chatFoot');
+  if (!c) return;
+  if (S.selecting) {
+    foot.className = 'chat-foot bar';
+    foot.innerHTML = `<button class="ib" data-act="sel-cancel" title="Cancel selection">${ico('close')}</button><span class="grow">${S.sel.size ? num(S.sel.size) + ' selected' : 'Select messages'}</span>`
+      + `<button class="ib" data-act="sel-delete" title="Delete selected"${S.sel.size ? '' : ' disabled style="opacity:.4"'}>${ico('trash')}</button>`;
+  } else if (c.ops.length) {
+    const nm = c.ops.filter(o => o.m).length, files = computeDrops(c).filter(e => !c.savedDrops.has(e));
+    const bits = [nm && `${num(nm)} message${nm === 1 ? '' : 's'}`, files.length && `${num(files.length)} file${files.length === 1 ? '' : 's'} (${fmtSize(files.reduce((s, e) => s + e.comp, 0))})`].filter(Boolean);
+    foot.className = 'chat-foot bar pending';
+    foot.innerHTML = `${ico('trash', 20)}<span class="grow">${bits.join(' and ')} deleted · not saved yet</span><button class="tbtn" data-act="undo">Undo all</button><button class="tbtn primary" data-act="save">Save zip</button>`;
+  } else {
+    foot.className = 'chat-foot';
+    foot.innerHTML = `${ico('lock', 15)}<span>${num(c.msgs.length)} messages · stays on this device · ${matchMedia('(hover: none)').matches ? 'long-press' : 'right-click'} a message to select or delete</span>`;
+  }
+}
+
+function openChat(c){
+  if (S.cur && S.cur !== c) release(S.cur);
+  exitSelect(true);
+  S.cur = c;
+  closeDrawer();
+  $('searchInp').value = ''; S.q = '';
+  app.classList.add('has-chat');
+  renderHead();
+  renderList();
+  renderLatest();
+}
+
+async function closeChat(c, silent){
+  if (!silent && c.ops.length && await ask('Close chat?', `<p>You have deleted items in “${esc(c.name)}” that haven't been saved. Closing the chat discards those changes; the zip file stays as it was.</p>`,
+      [{label: 'Cancel'}, {label: 'Discard and close', value: 1, cls: 'danger'}]) !== 1) return;
+  release(c);
+  if (S.cur === c) exitSelect(true);
+  S.chats = S.chats.filter(x => x !== c);
+  if (S.cur === c) { S.cur = null; list.innerHTML = ''; closeDrawer(); app.classList.remove('has-chat'); }
+  if (!silent) renderList();
+}
+
+function rowHTML(c, i){
+  const m = c.msgs[i], p = i > 0 ? c.msgs[i - 1] : null;
+  let h = '';
+  if (!p || p.day !== m.day) h += `<div class="day" data-i="${i}"><span>${dayLabel(m.ts)}</span></div>`;
+  if (m.system) {
+    const enc = /end-to-end encrypted/i.test(m.text);
+    return h + `<div class="sys${enc ? ' enc' : ''}${S.sel.has(m) ? ' sel' : ''}" data-i="${i}"><span>${enc ? ico('lock', 13) + ' ' : ''}${fmt(m.text)}</span></div>`;
+  }
+  const out = !!c.me && m.sender === c.me;
+  const first = !p || p.system || p.sender !== m.sender || p.day !== m.day;
+  const a = m.att, kind = a ? (a.entry && c.zip ? a.kind : 'missing') : null;
+  const metaTxt = (m.edited ? 'Edited ' : '') + TF.format(m.ts);
+  let cls = 'bubble', top = '', media = '', textHTML = '', jumbo = false;
+
+  if (c.isGroup && !out && first) top = `<div class="name" style="color:${color(m.sender)}">${esc(m.sender)}</div>`;
+  if (a) {
+    cls += ' has-media';
+    const src = esc(a.name), e = extOf(a.name);
+    if (kind === 'image') media = `<div class="media img" data-src="${src}" data-i="${i}"><div class="ph">${ico('photo', 44)}</div><img alt=""></div>`;
+    else if (kind === 'video') media = `<div class="media vid" data-src="${src}" data-i="${i}"><div class="ph">${ico('video', 44)}</div><video muted playsinline preload="metadata"></video><span class="play">${ico('play', 30)}</span></div>`;
+    else if (kind === 'sticker') { cls = 'bubble sticker'; media = `<div class="media stk" data-src="${src}"><div class="ph">${ico('photo', 40)}</div><img alt="Sticker"></div>`; }
+    else if (kind === 'audio') {
+      const voice = /PTT|AUDIO|voice/i.test(a.name) || e === 'opus';
+      media = `<div class="audio" data-src="${src}"><button class="ap-btn" title="Play">${ico('play', 28)}</button><div class="ap-track"><input type="range" min="0" max="100" step="0.1" value="0" aria-label="Seek"><div class="ap-time">${voice ? 'Voice message' : esc(a.label)} · ${fmtSize(a.entry.size)}</div></div><div class="ap-av${voice ? '' : ' music'}">${ico(voice ? 'mic' : 'music', 24)}</div></div>`;
+    }
+    else if (kind === 'missing') media = `<div class="doc missing"><div class="doc-ic">${esc(e.slice(0, 4))}</div><div class="doc-body"><div class="doc-name">${esc(a.label)}</div><div class="doc-meta">File not included in this export</div></div></div>`;
+    else {
+      const ic = kind === 'contact' ? 'vcf' : /^pdf$/.test(e) ? 'pdf' : /^(xlsx?|csv|ods)$/.test(e) ? 'xls' : /^(docx?|odt|rtf)$/.test(e) ? 'doc' : /^(pptx?|odp)$/.test(e) ? 'ppt' : /^(zip|rar|7z|tar|gz)$/.test(e) ? 'zip' : '';
+      const label = kind === 'contact' ? a.label.replace(/\.vcf$/i, '') : a.label;
+      const metaBits = [kind === 'contact' ? 'Contact card' : e.toUpperCase(), a.meta, fmtSize(a.entry.size)].filter(Boolean).join(' · ');
+      media = `<div class="doc" data-doc="${src}"><div class="doc-ic ${ic}">${kind === 'contact' ? ico('person', 22) : esc(e.slice(0, 4))}</div><div class="doc-body"><div class="doc-name">${esc(label)}</div><div class="doc-meta">${esc(metaBits)}</div></div><button class="doc-dl" title="Download">${ico('dl', 20)}</button></div>`;
+    }
+  }
+  if (m.deleted) textHTML = `<span class="del">${ico('block', 16)}${esc(m.text)}</span>`;
+  else if (m.omitted) {
+    const t = m.text.toLowerCase(), oi = /video|gif/.test(t) ? 'video' : /audio/.test(t) ? 'mic' : /image|photo|sticker/.test(t) ? 'photo' : 'file';
+    textHTML = `<span class="del">${ico(oi, 16)}${esc(m.text.replace(/^<|>$/g, ''))}</span>`;
+  } else if (m.text) { jumbo = !a && isJumbo(m.text); textHTML = fmt(m.text); }
+
+  let body = top + media, meta;
+  if (textHTML) {
+    body += `<div class="text${jumbo ? ' jumbo' : ''}">${textHTML}<span class="spacer">${metaTxt}</span></div>`;
+    meta = `<span class="meta">${metaTxt}</span>`;
+  } else if (kind === 'image' || kind === 'video') { cls += ' nocap'; meta = `<span class="meta over">${metaTxt}</span>`; }
+  else if (kind === 'sticker') meta = `<span class="meta">${metaTxt}</span>`;
+  else meta = `<span class="meta static">${metaTxt}</span>`;
+  const menu = `<button class="mbtn" title="Message options" aria-label="Message options">${ico('down', 20)}</button>`;
+  return h + `<div class="row ${out ? 'out' : 'in'}${first ? ' first' : ''}${S.sel.has(m) ? ' sel' : ''}" data-i="${i}"><div class="${cls}">${menu}${body}${meta}</div></div>`;
+}
+function html(a, b){ const c = S.cur; let s = ''; for (let i = a; i < b; i++) s += rowHTML(c, i); return s; }
+
+const io = new IntersectionObserver(entries => {
+  for (const en of entries) if (en.isIntersecting) { io.unobserve(en.target); loadInto(en.target); }
+}, {root: scroller, rootMargin: '800px 0px'});
+function afterInsert(){
+  for (const el of list.querySelectorAll('.media[data-src]:not(.obs)')) { el.classList.add('obs'); io.observe(el); }
+}
+async function loadInto(el){
+  const c = S.cur, name = el.dataset.src;
+  const fail = () => {
+    el.classList.add('broken');
+    const ph = el.querySelector('.ph');
+    ph.innerHTML = `${ico('file', 36)}<div>${esc(name.replace(/^\d{8}-/, ''))}</div><div>Preview not available · ${matchMedia('(hover: none)').matches ? 'tap' : 'click'} to download</div>`;
+  };
+  try {
+    const url = await mediaURL(c, name);
+    if (c !== S.cur) return;
+    const v = el.querySelector('video');
+    if (v) { v.onloadeddata = () => el.classList.add('ready'); v.onerror = fail; v.src = url + '#t=0.1'; }
+    else { const img = el.querySelector('img'); img.onload = () => el.classList.add('ready'); img.onerror = fail; img.src = url; }
+  } catch { fail(); }
+}
+
+function renderLatest(){
+  const len = S.cur.msgs.length;
+  S.end = len; S.start = Math.max(0, len - PAGE);
+  list.innerHTML = len ? html(S.start, S.end) : '<div class="hint">There are no messages left in this chat.</div>';
+  afterInsert();
+  S.stick = true;
+  scroller.scrollTop = scroller.scrollHeight;
+  fill();
+  updateDown();
+}
+function fill(){ while (S.start > 0 && scroller.scrollHeight <= scroller.clientHeight + 200) loadOlder(); if (S.stick) scroller.scrollTop = scroller.scrollHeight; }
+function loadOlder(){
+  const ns = Math.max(0, S.start - PAGE);
+  if (ns === S.start) return;
+  const anchor = list.firstElementChild, before = anchor ? anchor.getBoundingClientRect().top : 0;
+  list.insertAdjacentHTML('afterbegin', html(ns, S.start));
+  S.start = ns;
+  afterInsert();
+  if (anchor) scroller.scrollTop += anchor.getBoundingClientRect().top - before;
+}
+function loadNewer(){
+  const ne = Math.min(S.cur.msgs.length, S.end + PAGE);
+  if (ne === S.end) return;
+  list.insertAdjacentHTML('beforeend', html(S.end, ne));
+  S.end = ne;
+  afterInsert();
+}
+function jumpTo(i, q){
+  const c = S.cur, len = c.msgs.length;
+  S.start = Math.max(0, i - 75); S.end = Math.min(len, i + 75);
+  list.innerHTML = html(S.start, S.end);
+  afterInsert();
+  S.stick = false;
+  const r = list.querySelector(`.row[data-i="${i}"],.sys[data-i="${i}"]`);
+  if (r) {
+    r.scrollIntoView({block: 'center'});
+    r.classList.add('flash'); setTimeout(() => r.classList.remove('flash'), 2300);
+    if (q) markText(r.querySelector('.text,.doc-name,span'), q);
+  }
+  updateDown();
+}
+function goLatest(){
+  if (S.end < S.cur.msgs.length) renderLatest();
+  else { S.stick = true; scroller.scrollTo({top: scroller.scrollHeight, behavior: 'smooth'}); }
+}
+function updateDown(){
+  const fromBottom = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;
+  $('downBtn').classList.toggle('show', fromBottom > 300 || (S.cur && S.end < S.cur.msgs.length));
+}
+
+/* ---------- Editing: change messages while keeping the scroll position ---------- */
+function mutate(fn){
+  const c = S.cur, old = c.msgs, stick = S.stick, top = scroller.getBoundingClientRect().top;
+  let anchor = null, off = 0;
+  for (const el of list.querySelectorAll('.row[data-i],.sys[data-i]')) {
+    const r = el.getBoundingClientRect();
+    if (r.bottom > top) { anchor = old[+el.dataset.i]; off = r.top - top; break; }
+  }
+  const startM = old[S.start], endM = old[S.end - 1];
+  fn();
+  rebuild(c);
+  const len = c.msgs.length;
+  if (stick || !len || !startM) { renderLatest(); return; }
+  // first kept message at or after the given original position
+  const pos = k => { let lo = 0, hi = len; while (lo < hi) { const mid = (lo + hi) >> 1; if (c.msgs[mid].k < k) lo = mid + 1; else hi = mid; } return lo; };
+  S.start = Math.min(pos(startM.k), len - 1);
+  S.end = Math.max(S.start + 1, pos(endM.k + 1));
+  list.innerHTML = html(S.start, S.end);
+  afterInsert();
+  if (anchor) {
+    const el = list.querySelector(`.row[data-i="${Math.min(pos(anchor.k), len - 1)}"],.sys[data-i="${Math.min(pos(anchor.k), len - 1)}"]`);
+    if (el) scroller.scrollTop += el.getBoundingClientRect().top - top - off;
+  }
+  updateDown();
+}
+
+function enterSelect(m){
+  S.selecting = true; S.sel.clear(); S.lastSel = -1;
+  list.classList.add('selecting');
+  if (m) toggleSel(m, false);
+  renderFoot();
+}
+function exitSelect(quiet){
+  if (!S.selecting) return;
+  S.selecting = false; S.sel.clear();
+  list.classList.remove('selecting');
+  for (const el of list.querySelectorAll('.sel')) el.classList.remove('sel');
+  if (!quiet) renderFoot();
+}
+function toggleSel(m, range){
+  const c = S.cur, i = c.msgs.indexOf(m);
+  if (range && S.lastSel >= 0) {
+    const on = !S.sel.has(m), [a, b] = i < S.lastSel ? [i, S.lastSel] : [S.lastSel, i];
+    for (let j = a; j <= b; j++) on ? S.sel.add(c.msgs[j]) : S.sel.delete(c.msgs[j]);
+  } else S.sel.has(m) ? S.sel.delete(m) : S.sel.add(m);
+  S.lastSel = i;
+  for (const el of list.querySelectorAll('.row[data-i],.sys[data-i]')) el.classList.toggle('sel', S.sel.has(c.msgs[+el.dataset.i]));
+  renderFoot();
+}
+
+// Small modal dialog; resolves with the chosen button's value (null when dismissed)
+let modalDone = null;
+function ask(title, bodyHTML, buttons){
+  if (modalDone) modalDone(null);
+  $('modalTitle').textContent = title;
+  $('modalText').innerHTML = bodyHTML;
+  $('modalBtns').innerHTML = buttons.map((b, k) => `<button data-k="${k}" class="${b.cls || ''}">${esc(b.label)}</button>`).join('');
+  $('modal').hidden = false;
+  $('modalBtns').lastElementChild.focus();
+  return new Promise(res => {
+    modalDone = v => { modalDone = null; $('modal').hidden = true; res(v); };
+    $('modalBtns').onclick = e => { const b = e.target.closest('button'); if (b) modalDone(buttons[+b.dataset.k].value ?? null); };
+  });
+}
+$('modal').addEventListener('click', e => { if (e.target.id === 'modal' && modalDone) modalDone(null); });
+
+function openCtx(x, y, m){
+  const ctx = $('ctx'), a = m.att;
+  ctx.innerHTML = `<button data-act="select">Select messages</button>`
+    + (a && a.entry ? `<button data-act="download">Download ${{image: 'photo', video: 'video', audio: 'audio', sticker: 'sticker'}[a.kind] || 'file'}</button>` : '')
+    + (a && a.entry ? `<button data-act="delfile" class="danger">Delete ${{image: 'photo', video: 'video', audio: 'audio', sticker: 'sticker'}[a.kind] || 'file'} only</button>` : '')
+    + `<button data-act="delete" class="danger">Delete message</button>`;
+  ctx.hidden = false;
+  const w = ctx.offsetWidth, h = ctx.offsetHeight;
+  ctx.style.left = Math.max(8, Math.min(x, innerWidth - w - 8)) + 'px';
+  ctx.style.top = Math.max(8, y + h > innerHeight - 8 ? y - h : y) + 'px';
+  ctx.onclick = e => {
+    const act = e.target.dataset.act; if (!act) return;
+    ctx.hidden = true;
+    if (act === 'select') enterSelect(m);
+    else if (act === 'download') openFile(a.name, true);
+    else if (act === 'delfile') confirmDelete([m], 'file');
+    else if (act === 'delete') confirmDelete([m]);
+  };
+}
+
+// Files that would be dropped from the zip: attached to deleted messages (or deleted on their own) and not used by any kept message
+function computeDrops(c){
+  const keep = new Set(), cand = new Set();
+  for (const m of c.all) {
+    const a = m.att; if (!a || !a.orig) continue;
+    if (!m.removed && a.entry) keep.add(a.orig); else cand.add(a.orig);
+  }
+  return [...cand].filter(e => !keep.has(e));
+}
+
+async function confirmDelete(msgs, only){
+  const c = S.cur;
+  msgs = msgs.filter(m => !m.removed);
+  if (!msgs.length) return false;
+  const withFiles = msgs.filter(m => m.att && m.att.entry);
+  const files = [...new Set(withFiles.map(m => m.att.entry))], size = files.reduce((s, e) => s + e.comp, 0);
+  const n = msgs.length, fileTxt = `${files.length === 1 ? 'file' : num(files.length) + ' files'} (${fmtSize(size)})`;
+  const note = '<p>Nothing changes on disk until you click <b>Save zip</b>, and you can undo until then.</p>';
+  let v;
+  if (only === 'file') {
+    v = await ask(`Delete ${fileTxt.replace(/ \(.*/, '')}?`, `<p>The ${fileTxt} will be removed from the zip. The message stays in the chat, shown as “file not included”.</p>${note}`,
+      [{label: 'Cancel'}, {label: 'Delete', value: 'file', cls: 'danger'}]);
+  } else {
+    const buttons = [{label: 'Cancel'}];
+    if (withFiles.length) buttons.push({label: withFiles.length === n ? 'Delete file only' : 'Delete files only', value: 'file'});
+    buttons.push({label: n === 1 ? 'Delete message' : `Delete ${num(n)} messages`, value: 'msg', cls: 'danger'});
+    v = await ask(n === 1 ? 'Delete message?' : `Delete ${num(n)} messages?`,
+      (withFiles.length ? `<p>${n === 1 ? 'Its' : 'Their'} ${fileTxt} will be removed from the zip too. Choose <b>Delete file${withFiles.length === 1 ? '' : 's'} only</b> to keep the message text.</p>` : '') + note, buttons);
+  }
+  if (!v) return false;
+  mutate(() => {
+    for (const m of msgs) {
+      if (v === 'file') { if (m.att && m.att.entry) { m.att.entry = null; c.ops.push({a: m.att}); } }
+      else { m.removed = true; c.ops.push({m}); }
+    }
+  });
+  afterEdit();
+  return true;
+}
+function undoAll(){
+  const c = S.cur;
+  mutate(() => {
+    for (const o of c.ops.reverse()) { if (o.m) o.m.removed = false; else o.a.entry = o.a.orig; }
+    c.ops = [];
+  });
+  afterEdit();
+}
+function afterEdit(){
+  exitSelect(true);
+  renderHead(); renderList();
+  if (S.drawer === 'search') runSearch();
+  else if (S.drawer === 'info') renderInfo();
+}
+addEventListener('beforeunload', e => { if (S.chats.some(c => c.ops.length)) { e.preventDefault(); e.returnValue = ''; } });
+
+/* ---------- Saving: rebuild the zip without the deleted messages and files ---------- */
+const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(u8){ let c = 0xffffffff; for (let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; }
+
+function exportText(c){
+  const lines = [...c.preamble];
+  for (const m of c.all) if (!m.removed) lines.push(...m.raw);
+  return (c.bom ? '﻿' : '') + lines.join(c.eol);
+}
+
+async function buildExport(c){
+  const text = exportText(c);
+  if (!c.zip) return new Blob([text], {type: 'text/plain'});
+  const txt = new TextEncoder().encode(text), drop = new Set(computeDrops(c));
+  let txtData = txt, txtMethod = 0;
+  if (typeof CompressionStream === 'function') {
+    txtData = new Uint8Array(await new Response(new Blob([txt]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer());
+    txtMethod = 8;
+  }
+  const parts = [], central = [], BIG = 0xffffffff;
+  let off = 0, count = 0;
+  for (const e of c.zip.all) {
+    if (drop.has(e)) continue;
+    let data, crc, comp, size, method;
+    if (e === c.txtEntry) { data = txtData; crc = crc32(txt); comp = txtData.length; size = txt.length; method = txtMethod; }
+    else { const st = await c.zip.dataStart(e); data = c.zip.file.slice(st, st + e.comp); crc = e.crc; comp = e.comp; size = e.size; method = e.method; }
+    const nb = e.nameBytes, flags = e.flags & 0x0801, z64 = comp >= BIG || size >= BIG;
+    // local file header (sizes known up front, so no data descriptor)
+    const lh = new Uint8Array(30 + nb.length + (z64 ? 20 : 0)), lv = new DataView(lh.buffer);
+    lv.setUint32(0, 0x04034b50, true); lv.setUint16(4, z64 ? 45 : 20, true); lv.setUint16(6, flags, true); lv.setUint16(8, method, true);
+    lv.setUint16(10, e.time, true); lv.setUint16(12, e.date, true); lv.setUint32(14, crc, true);
+    lv.setUint32(18, z64 ? BIG : comp, true); lv.setUint32(22, z64 ? BIG : size, true); lv.setUint16(26, nb.length, true); lv.setUint16(28, z64 ? 20 : 0, true);
+    lh.set(nb, 30);
+    if (z64) { const x = 30 + nb.length; lv.setUint16(x, 1, true); lv.setUint16(x + 2, 16, true); lv.setBigUint64(x + 4, BigInt(size), true); lv.setBigUint64(x + 12, BigInt(comp), true); }
+    // central directory record
+    const big = [size >= BIG && size, comp >= BIG && comp, off >= BIG && off].filter(v => v !== false);
+    const ch = new Uint8Array(46 + nb.length + (big.length ? 4 + 8 * big.length : 0)), cv = new DataView(ch.buffer);
+    cv.setUint32(0, 0x02014b50, true); cv.setUint16(4, (e.madeBy & 0xff00) | 45, true); cv.setUint16(6, big.length ? 45 : 20, true);
+    cv.setUint16(8, flags, true); cv.setUint16(10, method, true); cv.setUint16(12, e.time, true); cv.setUint16(14, e.date, true); cv.setUint32(16, crc, true);
+    cv.setUint32(20, comp >= BIG ? BIG : comp, true); cv.setUint32(24, size >= BIG ? BIG : size, true); cv.setUint16(28, nb.length, true);
+    cv.setUint16(30, big.length ? 4 + 8 * big.length : 0, true); cv.setUint16(36, e.intAttr, true); cv.setUint32(38, e.extAttr, true);
+    cv.setUint32(42, off >= BIG ? BIG : off, true);
+    ch.set(nb, 46);
+    if (big.length) { let x = 46 + nb.length; cv.setUint16(x, 1, true); cv.setUint16(x + 2, 8 * big.length, true); x += 4; for (const v of big) { cv.setBigUint64(x, BigInt(v), true); x += 8; } }
+    parts.push(lh, data); central.push(ch);
+    off += lh.length + comp; count++;
+  }
+  const cdSize = central.reduce((s, b) => s + b.length, 0), cdOff = off, tail = [];
+  if (count >= 0xffff || cdOff >= BIG || cdSize >= BIG) {
+    const r = new Uint8Array(76), v = new DataView(r.buffer);
+    v.setUint32(0, 0x06064b50, true); v.setBigUint64(4, 44n, true); v.setUint16(12, 45, true); v.setUint16(14, 45, true);
+    v.setBigUint64(24, BigInt(count), true); v.setBigUint64(32, BigInt(count), true); v.setBigUint64(40, BigInt(cdSize), true); v.setBigUint64(48, BigInt(cdOff), true);
+    v.setUint32(56, 0x07064b50, true); v.setBigUint64(64, BigInt(cdOff + cdSize), true); v.setUint32(72, 1, true);
+    tail.push(r);
+  }
+  const eo = new Uint8Array(22), ev = new DataView(eo.buffer);
+  ev.setUint32(0, 0x06054b50, true); ev.setUint16(8, Math.min(count, 0xffff), true); ev.setUint16(10, Math.min(count, 0xffff), true);
+  ev.setUint32(12, Math.min(cdSize, BIG), true); ev.setUint32(16, Math.min(cdOff, BIG), true);
+  tail.push(eo);
+  return new Blob([...parts, ...central, ...tail], {type: 'application/zip'});
+}
+
+async function saveChat(c){
+  const canPick = typeof showSaveFilePicker === 'function', isZip = !!c.zip;
+  // iPhone/iPad: the share sheet offers "Save to Files", which is friendlier than a Safari download
+  const canShare = !canPick && matchMedia('(pointer: coarse)').matches && typeof navigator.canShare === 'function'
+    && navigator.canShare({files: [new File([''], 'x.zip', {type: 'application/zip'})]});
+  const what = (() => { const nm = c.ops.filter(o => o.m).length, nf = computeDrops(c).filter(e => !c.savedDrops.has(e)).length;
+    return [nm && `${num(nm)} message${nm === 1 ? '' : 's'}`, nf && `${num(nf)} file${nf === 1 ? '' : 's'}`].filter(Boolean).join(' and '); })();
+  let v;
+  if (c.handle) v = await ask('Save changes?', `<p>This rewrites <b>${esc(c.fileName)}</b> on your computer without the ${what} you deleted. This can't be undone, so keep a backup if you might want them later.</p>`,
+    [{label: 'Cancel'}, {label: 'Save as a copy…', value: 'copy'}, {label: 'Overwrite original', value: 'over', cls: 'danger'}]);
+  else v = await ask('Save changes?', `<p>A new ${isZip ? 'zip' : 'text file'} without the ${what} you deleted will be ${canPick ? 'saved where you choose' : canShare ? 'created for you to save to Files' : 'downloaded'}.</p>`
+    + `<p>${canPick ? 'To replace the original, pick it in the save dialog.' : "Your browser can't change the original file, so delete the old one yourself if you no longer need it."}</p>`,
+    [{label: 'Cancel'}, {label: canPick ? 'Save as…' : canShare ? 'Continue' : 'Download', value: 'copy', cls: 'primary'}]);
+  if (!v) return;
+  let h = null;
+  try {
+    if (v === 'over') {
+      if ((await c.handle.requestPermission({mode: 'readwrite'})) !== 'granted') throw new Error('permission to change the file was not given');
+      h = c.handle;
+    } else if (canPick) {
+      try {
+        h = await showSaveFilePicker({suggestedName: c.fileName, types: [isZip ? {description: 'Zip archive', accept: {'application/zip': ['.zip']}} : {description: 'Text file', accept: {'text/plain': ['.txt']}}]});
+      } catch (e) { if (e.name === 'AbortError') return; throw e; }
+    }
+    showLoading('Saving…');
+    const blob = await buildExport(c);
+    if (h) {
+      const w = await h.createWritable();
+      try { await w.write(blob); await w.close(); } catch (e) { await w.abort().catch(() => {}); throw e; }
+      // The old File is stale once overwritten, so reopen the chat from what was just written
+      const nc = await loadChat(await h.getFile(), h);
+      nc.me = c.me;
+      release(c);
+      S.chats[S.chats.indexOf(c)] = nc;
+      if (S.cur === c) S.cur = null;
+      openChat(nc);
+      toast(`Saved ${h.name}`);
+    } else {
+      let how = 'download';
+      if (canShare) {
+        // Sharing needs a fresh tap, so ask once the zip is built
+        $('loading').hidden = true;
+        how = await ask('Your new zip is ready', `<p>In the share sheet that opens next, choose <b>Save to Files</b>.</p>`,
+          [{label: 'Cancel'}, {label: 'Download', value: 'download'}, {label: 'Save to Files', value: 'share', cls: 'primary'}]);
+        if (!how) return;
+      }
+      if (how === 'share') {
+        try { await navigator.share({files: [new File([blob], c.fileName, {type: blob.type})]}); }
+        catch (e) { if (e.name === 'AbortError') return; throw e; }
+      } else {
+        const a = document.createElement('a'), url = URL.createObjectURL(blob);
+        a.href = url; a.download = c.fileName;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      }
+      c.ops = []; c.savedDrops = new Set(computeDrops(c));
+      renderFoot(); renderList();
+      toast(how === 'share' ? `Saved a new copy of ${c.fileName}` : `Downloaded a new copy of ${c.fileName}`);
+    }
+  } catch (e) { console.error(e); toast(`Couldn't save: ${e.message}`); }
+  finally { $('loading').hidden = true; }
+}
+
+let raf = 0, fdT = 0;
+scroller.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; onScroll(); }); }, {passive: true});
+function onScroll(){
+  const c = S.cur; if (!c) return;
+  const len = c.msgs.length, fromBottom = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;
+  S.stick = fromBottom < 30 && S.end === len;
+  if (scroller.scrollTop < 800 && S.start > 0) loadOlder();
+  if (fromBottom < 800 && S.end < len) loadNewer();
+  updateDown();
+  floatDate();
+}
+function floatDate(){
+  const kids = list.children; if (!kids.length) return;
+  const y = scroller.scrollTop + 30;
+  let lo = 0, hi = kids.length - 1, ans = 0;
+  while (lo <= hi) { const mid = (lo + hi) >> 1; if (kids[mid].offsetTop <= y) { ans = mid; lo = mid + 1; } else hi = mid - 1; }
+  const m = S.cur.msgs[+kids[ans].dataset.i];
+  if (!m || scroller.scrollTop < 20) return;
+  const fd = $('floatDate');
+  fd.textContent = dayLabel(m.ts); fd.classList.add('show');
+  clearTimeout(fdT); fdT = setTimeout(() => fd.classList.remove('show'), 1400);
+}
+const ro = new ResizeObserver(() => { if (S.stick && S.cur) scroller.scrollTop = scroller.scrollHeight; });
+ro.observe(list); ro.observe(scroller);
+
+/* ---------- Message interactions ---------- */
+list.addEventListener('click', e => {
+  const t = e.target;
+  if (S.selecting) {
+    const r = t.closest('.row[data-i],.sys[data-i]');
+    if (r) { e.preventDefault(); toggleSel(S.cur.msgs[+r.dataset.i], e.shiftKey); }
+    return;
+  }
+  const mb = t.closest('.mbtn');
+  if (mb) { const b = mb.getBoundingClientRect(); return openCtx(b.right - 180, b.bottom + 4, S.cur.msgs[+mb.closest('.row').dataset.i]); }
+  const dl = t.closest('.doc-dl');
+  if (dl) { e.stopPropagation(); return openFile(dl.closest('.doc').dataset.doc, true); }
+  const doc = t.closest('.doc[data-doc]');
+  if (doc) return openFile(doc.dataset.doc);
+  const ap = t.closest('.ap-btn');
+  if (ap) return toggleAudio(ap.closest('.audio'));
+  const md = t.closest('.media');
+  if (md) {
+    if (md.classList.contains('broken')) return openFile(md.dataset.src, true);
+    if (md.dataset.i && md.classList.contains('ready')) openLB(+md.dataset.i);
+  }
+});
+// Long-press opens the message menu on touch screens (iOS never sends contextmenu for a long-press)
+let lp = null, lastTouch = 0;
+list.addEventListener('touchstart', e => {
+  lastTouch = Date.now();
+  if (S.selecting || e.touches.length !== 1) return;
+  const r = e.target.closest('.row[data-i],.sys[data-i]'); if (!r || e.target.closest('.mbtn,input,button,a')) return;
+  const t = e.touches[0], m = S.cur.msgs[+r.dataset.i];
+  lp = {x: t.clientX, y: t.clientY, fired: false};
+  lp.timer = setTimeout(() => { lp.fired = true; if (navigator.vibrate) navigator.vibrate(15); openCtx(lp.x, lp.y, m); }, 500);
+}, {passive: true});
+list.addEventListener('touchmove', e => {
+  if (lp && !lp.fired && Math.hypot(e.touches[0].clientX - lp.x, e.touches[0].clientY - lp.y) > 10) { clearTimeout(lp.timer); lp = null; }
+}, {passive: true});
+list.addEventListener('touchend', e => { if (!lp) return; clearTimeout(lp.timer); if (lp.fired) e.preventDefault(); lp = null; });
+list.addEventListener('touchcancel', () => { if (lp) { clearTimeout(lp.timer); lp = null; } });
+
+list.addEventListener('contextmenu', e => {
+  const r = e.target.closest('.row[data-i],.sys[data-i]');
+  if (r && Date.now() - lastTouch < 1500) { e.preventDefault(); return; } // touch long-press is handled above
+  if (!r || S.selecting) return;
+  e.preventDefault();
+  openCtx(e.clientX, e.clientY, S.cur.msgs[+r.dataset.i]);
+});
+$('chatFoot').addEventListener('click', e => {
+  const act = (e.target.closest('[data-act]') || {}).dataset?.act;
+  if (act === 'sel-cancel') exitSelect();
+  else if (act === 'sel-delete') confirmDelete(S.cur.msgs.filter(m => S.sel.has(m)));
+  else if (act === 'undo') undoAll();
+  else if (act === 'save') saveChat(S.cur);
+});
+list.addEventListener('input', e => {
+  const box = e.target.closest('.audio'); if (!box || !box._a) return;
+  const a = box._a; if (isFinite(a.duration)) a.currentTime = e.target.value / 100 * a.duration;
+});
+
+async function openFile(name, download){
+  try {
+    const url = await mediaURL(S.cur, name);
+    if (!download && /^(pdf|txt|jpe?g|png|gif|webp|mp4|webm|mp3|json|csv)$/.test(extOf(name))) { window.open(url, '_blank', 'noopener'); return; }
+    const a = document.createElement('a');
+    a.href = url; a.download = name.replace(/^\d{8}-/, '');
+    document.body.appendChild(a); a.click(); a.remove();
+  } catch (e) { toast(`Couldn't open ${name}: ${e.message}`); }
+}
+
+async function toggleAudio(box){
+  const btn = box.querySelector('.ap-btn');
+  if (!box._a) {
+    btn.classList.add('loading');
+    let url;
+    try { url = await mediaURL(S.cur, box.dataset.src); } catch (e) { btn.classList.remove('loading'); return toast(`Couldn't load audio: ${e.message}`); }
+    const a = new Audio(url), rng = box.querySelector('input'), tm = box.querySelector('.ap-time');
+    box._a = a;
+    a.addEventListener('loadedmetadata', () => { if (isFinite(a.duration)) tm.textContent = dur(a.duration); });
+    a.addEventListener('timeupdate', () => { if (isFinite(a.duration)) rng.value = a.currentTime / a.duration * 100; tm.textContent = dur(a.currentTime); });
+    a.addEventListener('play', () => btn.innerHTML = ico('pause', 28));
+    a.addEventListener('pause', () => btn.innerHTML = ico('play', 28));
+    a.addEventListener('ended', () => { rng.value = 0; tm.textContent = dur(a.duration); });
+    a.addEventListener('error', () => { tm.textContent = "This browser can't play this audio format"; });
+    btn.classList.remove('loading');
+  }
+  const a = box._a;
+  if (a.paused) {
+    if (curAudio && curAudio !== a) curAudio.pause();
+    curAudio = a;
+    a.play().catch(() => {});
+  } else a.pause();
+}
+
+/* ---------- Lightbox ---------- */
+const LB = {pos: 0, token: 0};
+function openLB(i){
+  const c = S.cur; LB.pos = c.media.indexOf(i);
+  if (LB.pos < 0) return;
+  $('lb').hidden = false; showLB();
+}
+function closeLB(){ $('lb').hidden = true; $('lbMedia').innerHTML = ''; }
+async function showLB(){
+  const c = S.cur, i = c.media[LB.pos], m = c.msgs[i], tok = ++LB.token;
+  $('lbWho').innerHTML = `<div>${esc(m.sender === c.me ? 'You' : m.sender)}</div><div>${esc(DLF.format(m.ts) + ' at ' + TF.format(m.ts))}</div>`;
+  $('lbCap').innerHTML = fmt(m.text || '');
+  $('lbPrev').disabled = LB.pos <= 0;
+  $('lbNext').disabled = LB.pos >= c.media.length - 1;
+  $('lbMedia').innerHTML = '<div class="spin"></div>';
+  try {
+    const url = await mediaURL(c, m.att.name);
+    if (tok !== LB.token) return;
+    $('lbMedia').innerHTML = m.att.kind === 'video' ? `<video controls autoplay playsinline src="${url}"></video>` : `<img alt="" src="${url}">`;
+  } catch (e) { $('lbMedia').textContent = e.message; }
+}
+async function deleteFromLB(){
+  const c = S.cur, m = c.msgs[c.media[LB.pos]];
+  if (!(await confirmDelete([m]))) return;
+  if (!c.media.length) return closeLB();
+  LB.pos = Math.min(LB.pos, c.media.length - 1); // the next item slides into this position
+  showLB();
+}
+function stepLB(d){ const n = LB.pos + d; if (n >= 0 && n < S.cur.media.length) { LB.pos = n; showLB(); } }
+
+/* ---------- Drawer: search & info ---------- */
+function openDrawer(kind){
+  if (!S.cur) return;
+  S.drawer = kind;
+  $('drawer').hidden = false;
+  $('drawerSearch').hidden = kind !== 'search';
+  $('searchBtn').classList.toggle('on', kind === 'search');
+  if (kind === 'search') { $('drawerTitle').textContent = 'Search messages'; runSearch(); $('searchInp').focus(); $('searchInp').select(); }
+  else { $('drawerTitle').textContent = 'Chat info'; renderInfo(); }
+}
+function closeDrawer(){ S.drawer = null; $('drawer').hidden = true; $('searchBtn').classList.remove('on'); }
+
+function runSearch(){
+  const c = S.cur, body = $('drawerBody');
+  const q = $('searchInp').value.trim().toLowerCase();
+  S.q = q;
+  if (!q) { body.innerHTML = `<div class="hint">Search for messages in “${esc(c.name)}”.</div>`; return; }
+  const res = [], LIMIT = 500;
+  for (let i = c.msgs.length - 1; i >= 0 && res.length < LIMIT; i--) {
+    const m = c.msgs[i], t = m.text + (m.att ? ' ' + m.att.label : ''), k = t.toLowerCase().indexOf(q);
+    if (k >= 0) res.push([i, t, k]);
+  }
+  if (!res.length) { body.innerHTML = '<div class="hint">No messages found.</div>'; return; }
+  body.innerHTML = `<div class="res-count">${res.length >= LIMIT ? LIMIT + '+' : res.length} message${res.length === 1 ? '' : 's'} found</div>` + res.map(([i, t, k]) => {
+    const m = c.msgs[i], s = Math.max(0, k - 40);
+    const snip = (s > 0 ? '…' : '') + esc(t.slice(s, k)) + '<mark>' + esc(t.slice(k, k + q.length)) + '</mark>' + esc(t.slice(k + q.length, k + q.length + 120));
+    const who = m.system ? '' : `<b>${esc(m.sender === c.me ? 'You' : m.sender)}:</b> `;
+    return `<div class="res" data-i="${i}"><div class="res-d">${esc(SDF.format(m.ts) + ' ' + TF.format(m.ts))}</div><div class="res-t">${who}${snip}</div></div>`;
+  }).join('');
+}
+
+let infoMediaShown = 0;
+const thumbIO = new IntersectionObserver(entries => {
+  for (const en of entries) if (en.isIntersecting) {
+    thumbIO.unobserve(en.target);
+    const el = en.target, c = S.cur;
+    mediaURL(c, el.dataset.src).then(url => { if (c === S.cur) { const img = new Image(); img.alt = ''; img.onload = () => el.appendChild(img); img.src = url; } }, () => {});
+  }
+}, {root: $('drawerBody'), rootMargin: '300px'});
+function thumbs(from, to){
+  const c = S.cur, idx = c.media.slice().reverse().slice(from, to);
+  return idx.map(i => { const a = c.msgs[i].att; return a.kind === 'video'
+    ? `<div class="thumb v" data-i="${i}">${ico('play', 34)}</div>`
+    : `<div class="thumb" data-i="${i}" data-src="${esc(a.name)}">${ico('photo', 28)}</div>`; }).join('');
+}
+function observeThumbs(){ for (const el of $('drawerBody').querySelectorAll('.thumb[data-src]:not(.obs)')) { el.classList.add('obs'); thumbIO.observe(el); } }
+function renderInfo(){
+  const c = S.cur, n = c.msgs.length, first = n ? DF.format(c.msgs[0].ts) : '–', last = n ? DF.format(c.msgs[n - 1].ts) : '–';
+  infoMediaShown = Math.min(30, c.media.length);
+  const docs = c.docs.slice().reverse().slice(0, 30);
+  $('drawerBody').innerHTML = `<div class="info">
+    <div class="card info-top">${avatar(c, 'xl')}<h2>${esc(c.name)}</h2><p>${c.isGroup ? `Group · ${c.participants.length} participants` : `${num(c.msgs.length)} messages`}</p></div>
+    <div class="card"><div class="stats">
+      <div class="stat"><b>${num(c.msgs.length)}</b><span>Messages</span></div>
+      <div class="stat"><b>${num(c.media.length)}</b><span>Photos &amp; videos</span></div>
+      <div class="stat"><b>${first}</b><span>First message</span></div>
+      <div class="stat"><b>${last}</b><span>Last message</span></div>
+    </div></div>
+    <div class="card"><div class="card-h">Which one is you?</div><p class="muted">Messages from this person are shown on the right in green.</p>
+      <select id="meSel"><option value="">Nobody – show everyone on the left</option>${c.participants.map(p => `<option${p.name === c.me ? ' selected' : ''}>${esc(p.name)}</option>`).join('')}</select></div>
+    ${c.media.length ? `<div class="card"><div class="card-h"><span>Media</span><span>${num(c.media.length)}</span></div><div class="grid" id="mediaGrid">${thumbs(0, infoMediaShown)}</div>${c.media.length > infoMediaShown ? '<button class="more" id="moreMedia">Show more</button>' : ''}</div>` : ''}
+    ${docs.length ? `<div class="card"><div class="card-h"><span>Documents</span><span>${num(c.docs.length)}</span></div>${docs.map(i => { const a = c.msgs[i].att; return `<div class="dl-row" data-i="${i}"><div class="doc-ic ${a.kind === 'contact' ? 'vcf' : ''}">${a.kind === 'contact' ? ico('person', 22) : esc(extOf(a.name).slice(0, 4))}</div><div class="doc-body"><div class="doc-name">${esc(a.label)}</div><div class="doc-meta">${esc(fmtSize(a.entry.size) + ' · ' + SDF.format(c.msgs[i].ts))}</div></div><button class="ib" data-del="${i}" title="Delete document" aria-label="Delete document">${ico('trash', 20)}</button></div>`; }).join('')}</div>` : ''}
+    <div class="card"><div class="card-h"><span>${c.participants.length} participant${c.participants.length === 1 ? '' : 's'}</span><span>messages</span></div>
+      ${c.participants.map(p => `<div class="pl">${pAvatar(p.name, 'sm')}<div class="pl-n">${esc(p.name)}${p.name === c.me ? '<span class="tag">You</span>' : ''}</div><div class="pl-c">${num(p.count)}</div></div>`).join('')}</div>
+    <div class="card"><button class="more" id="closeChatBtn" style="color:#ea0038">Close chat</button></div>
+  </div>`;
+  observeThumbs();
+}
+function setMe(name){
+  const c = S.cur; c.me = name || null;
+  store('wcv-me:' + c.name, c.me);
+  const st = scroller.scrollTop, stick = S.stick;
+  list.innerHTML = html(S.start, S.end); afterInsert();
+  scroller.scrollTop = stick ? scroller.scrollHeight : st;
+  renderHead(); renderList();
+  if (S.drawer === 'info') renderInfo();
+}
+
+$('drawerBody').addEventListener('click', e => {
+  const t = e.target, mobile = matchMedia('(max-width:1000px)').matches;
+  const del = t.closest('[data-del]');
+  if (del) return confirmDelete([S.cur.msgs[+del.dataset.del]]);
+  const res = t.closest('.res[data-i], .dl-row[data-i]');
+  if (res) { jumpTo(+res.dataset.i, S.drawer === 'search' ? S.q : ''); if (mobile) closeDrawer(); return; }
+  const th = t.closest('.thumb'); if (th) return openLB(+th.dataset.i);
+  if (t.id === 'moreMedia') {
+    const n = Math.min(S.cur.media.length, infoMediaShown + 60);
+    $('mediaGrid').insertAdjacentHTML('beforeend', thumbs(infoMediaShown, n)); infoMediaShown = n; observeThumbs();
+    if (n >= S.cur.media.length) t.remove();
+    return;
+  }
+  if (t.id === 'closeChatBtn') closeChat(S.cur);
+});
+$('drawerBody').addEventListener('change', e => { if (e.target.id === 'meSel') setMe(e.target.value); });
+
+/* ---------- Wiring ---------- */
+function applyTheme(){
+  const t = load('wcv-theme');
+  if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
+  const dark = t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  $('themeBtn').innerHTML = ico(dark ? 'sun' : 'moon');
+}
+$('themeBtn').onclick = () => {
+  const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  store('wcv-theme', dark ? 'light' : 'dark'); applyTheme();
+};
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+
+$('openBtn').innerHTML = ico('add'); $('filterIco').innerHTML = ico('search', 20); $('searchIco').innerHTML = ico('search', 20);
+$('heroIco').innerHTML = ico('chat', 60); $('backBtn').innerHTML = ico('back'); $('dateBtn').innerHTML = ico('cal');
+$('searchBtn').innerHTML = ico('search'); $('menuBtn').innerHTML = ico('more'); $('downBtn').innerHTML = ico('down', 28);
+$('drawerClose').innerHTML = ico('close'); $('lbJump').innerHTML = ico('goto'); $('lbDl').innerHTML = ico('dl'); $('lbClose').innerHTML = ico('close');
+$('lbPrev').innerHTML = ico('prev', 30); $('lbNext').innerHTML = ico('next', 30);
+$('welcomeFoot').innerHTML = `${ico('lock', 14)} Works offline. Your chats are never uploaded anywhere.`;
+
+const fileInp = $('fileInp');
+// Prefer the File System Access picker: it gives a handle that lets "Save zip" overwrite the original file
+async function pickFiles(){
+  if (typeof showOpenFilePicker !== 'function') return fileInp.click();
+  let handles;
+  try {
+    handles = await showOpenFilePicker({multiple: true, types: [{description: 'WhatsApp export', accept: {'application/zip': ['.zip'], 'text/plain': ['.txt']}}]});
+  } catch (e) { if (e.name !== 'AbortError') fileInp.click(); return; }
+  handleFiles(await Promise.all(handles.map(async h => ({file: await h.getFile(), handle: h}))));
+}
+$('openBtn').onclick = pickFiles;
+document.addEventListener('click', e => { if (e.target.closest('[data-open]')) pickFiles(); });
+document.addEventListener('click', e => { if (!e.target.closest('#ctx, .mbtn')) $('ctx').hidden = true; });
+scroller.addEventListener('scroll', () => { $('ctx').hidden = true; }, {passive: true});
+fileInp.onchange = () => { const f = [...fileInp.files]; fileInp.value = ''; if (f.length) handleFiles(f); };
+$('chatFilter').oninput = renderList;
+$('chatList').addEventListener('click', e => {
+  const ci = e.target.closest('.ci'); if (!ci) return;
+  const c = S.chats.find(x => x.id === +ci.dataset.id);
+  if (c === S.cur) app.classList.add('has-chat'); else openChat(c);
+});
+$('backBtn').onclick = () => app.classList.remove('has-chat');
+$('who').onclick = () => S.drawer === 'info' ? closeDrawer() : openDrawer('info');
+$('mePill').onclick = () => openDrawer('info');
+$('searchBtn').onclick = () => S.drawer === 'search' ? closeDrawer() : openDrawer('search');
+$('drawerClose').onclick = closeDrawer;
+let searchT;
+$('searchInp').oninput = () => { clearTimeout(searchT); searchT = setTimeout(runSearch, 200); };
+$('downBtn').onclick = goLatest;
+
+function pickDate(){
+  const inp = $('dateInp');
+  try { inp.showPicker(); } catch { inp.style.cssText = 'opacity:1;pointer-events:auto;width:auto;height:auto;z-index:40'; inp.focus(); }
+}
+$('dateBtn').onclick = pickDate;
+$('dateInp').onchange = () => {
+  const inp = $('dateInp'); inp.style.cssText = '';
+  if (!inp.value || !S.cur) return;
+  const [y, mo, d] = inp.value.split('-').map(Number), t = new Date(y, mo - 1, d);
+  let i = S.cur.msgs.findIndex(m => m.ts >= t);
+  if (i < 0) i = S.cur.msgs.length - 1;
+  jumpTo(i);
+};
+
+$('menuBtn').onclick = e => { e.stopPropagation(); $('menu').hidden = !$('menu').hidden; };
+$('menu').onclick = e => {
+  const act = e.target.dataset.act; $('menu').hidden = true;
+  if (act === 'info' || act === 'search') openDrawer(act);
+  else if (act === 'date') pickDate();
+  else if (act === 'latest') goLatest();
+  else if (act === 'select') enterSelect();
+  else if (act === 'close') closeChat(S.cur);
+};
+document.addEventListener('click', e => { if (!e.target.closest('.menu-wrap')) $('menu').hidden = true; });
+
+$('lbClose').onclick = closeLB;
+$('lbPrev').onclick = () => stepLB(-1);
+$('lbNext').onclick = () => stepLB(1);
+$('lbDel').innerHTML = ico('trash');
+$('lbDel').onclick = deleteFromLB;
+$('lbDl').onclick = () => openFile(S.cur.msgs[S.cur.media[LB.pos]].att.name, true);
+$('lbJump').onclick = () => { const i = S.cur.media[LB.pos]; closeLB(); jumpTo(i); };
+$('lb').addEventListener('click', e => { if (e.target.classList.contains('lb-media') || e.target.classList.contains('lb-stage')) closeLB(); });
+
+document.addEventListener('keydown', e => {
+  if (modalDone) { if (e.key === 'Escape') modalDone(null); return; }
+  if (!$('ctx').hidden && e.key === 'Escape') { $('ctx').hidden = true; return; }
+  if (!$('lb').hidden) {
+    if (e.key === 'Escape') closeLB();
+    else if (e.key === 'ArrowLeft') stepLB(-1);
+    else if (e.key === 'ArrowRight') stepLB(1);
+    return;
+  }
+  if (e.key === 'Escape') { if (!$('menu').hidden) $('menu').hidden = true; else if (S.selecting) exitSelect(); else if (S.drawer) closeDrawer(); }
+  if (e.key === 'Delete' && S.selecting && S.sel.size) confirmDelete(S.cur.msgs.filter(m => S.sel.has(m)));
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f' && S.cur) { e.preventDefault(); openDrawer('search'); }
+});
+
+let dragN = 0;
+const hasFiles = e => e.dataTransfer && [...e.dataTransfer.types].includes('Files');
+addEventListener('dragenter', e => { if (!hasFiles(e)) return; e.preventDefault(); dragN++; $('drop').hidden = false; });
+addEventListener('dragover', e => { if (hasFiles(e)) e.preventDefault(); });
+addEventListener('dragleave', () => { if (--dragN <= 0) { dragN = 0; $('drop').hidden = true; } });
+addEventListener('drop', e => {
+  if (!hasFiles(e)) return;
+  e.preventDefault(); dragN = 0; $('drop').hidden = true;
+  // Handles and files must both be requested synchronously while the drop event is live
+  const items = [...e.dataTransfer.items].filter(i => i.kind === 'file');
+  const files = items.map(i => i.getAsFile());
+  const handles = items.map(i => typeof i.getAsFileSystemHandle === 'function' ? i.getAsFileSystemHandle().catch(() => null) : null);
+  Promise.all(handles).then(hs => handleFiles(files.map((file, k) => ({file, handle: hs[k] && hs[k].kind === 'file' ? hs[k] : null})).filter(x => x.file)));
+});
+
+// Installable + offline when served over https (or localhost); skipped when opened as a local file
+if (/^https?:$/.test(location.protocol) && 'serviceWorker' in navigator) {
+  const link = document.createElement('link');
+  link.rel = 'manifest'; link.href = 'manifest.webmanifest';
+  document.head.appendChild(link);
+  addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+
+applyTheme();
+renderList();
+</script>
+</body>
+</html>
